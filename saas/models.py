@@ -8,7 +8,7 @@ class PTABoard(models.Model):
     first_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)
     email = models.EmailField(blank=True, null=True)
-    phone = models.IntegerField(max_length=20, null=True, blank=True)
+    phone = models.IntegerField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -23,7 +23,7 @@ class School(models.Model):
     state = models.CharField(max_length=100, null=True, blank=True)
     zipcode = models.PositiveIntegerField(max_length=100, null=True, blank=True)
     pta = models.ManyToManyField(PTABoard)
-    pta_paid = models.BooleanField(null=True, blank=True, default=False)
+    pta_paid = models.BooleanField(default=False)
     pta_paid_date = models.DateTimeField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -37,7 +37,7 @@ class Volunteer(models.Model):
     first_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)
     email = models.EmailField(blank=True, null=True)
-    phone = models.IntegerField(max_length=20, null=True, blank=True)
+    phone = models.IntegerField(null=True, blank=True)
 
     def __unicode__(self):
         return unicode(self.first_name + self.last_name)
@@ -69,7 +69,7 @@ class Admin(models.Model):
     school = models.ManyToManyField(School)
     first_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)
-    phone = models.IntegerField(max_length=20, null=True, blank=True)
+    phone = models.IntegerField(null=True, blank=True)
 
     def __unicode__(self):
         return unicode(self.first_name + self.last_name)
@@ -78,7 +78,7 @@ class Judge(models.Model):
     user = models.ForeignKey(User)
     first_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)
-    phone = models.IntegerField(max_length=20, null=True, blank=True)
+    phone = models.IntegerField(null=True, blank=True)
     organisation = models.CharField(max_length=50, null=True, blank=True)
     school = models.ManyToManyField(School)
     created = models.DateTimeField(auto_now_add=True)
@@ -98,7 +98,7 @@ class Parent(models.Model):
     city = models.CharField(max_length=100, null=True, blank=True)
     state = models.CharField(max_length=100, null=True, blank=True)
     zipcode = models.PositiveIntegerField(max_length=100, null=True, blank=True)
-    phone = models.IntegerField(max_length=20, null=True, blank=True)
+    phone = models.IntegerField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
