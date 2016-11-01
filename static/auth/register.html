@@ -27,10 +27,10 @@
             </div>
             <h3>Register to SchoolSaas</h3>
             <p>Create account to see it in action.</p>
-            <form class="m-t" role="form" action="/">
-
+            <form method="post" class="m-t" role="form" action="">
+                {% csrf_token %}
                 <div class="form-group">
-                    <select id='selected' class="select2_demo_3 form-control">
+                    <select name="role" id='selected' class="select2_demo_3 form-control">
                         <option selected disabled>Please choose role:</option>
                         <option value="parent">Parent</option>
                         <option value="judges" >Judge</option>
@@ -39,19 +39,19 @@
                 </div>
 
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Full Name" required="">
+                    <input name="full_name" type="text" class="form-control" placeholder="Full Name" required="">
                 </div>
 
                 <div class="form-group">
-                    <input type="email" class="form-control" placeholder="Email" required="">
+                    <input name="email" type="email" class="form-control" placeholder="Email" required="">
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" placeholder="Password" required="">
+                    <input name="password" type="password" class="form-control" placeholder="Password" required="">
                 </div>
                 <div class="form-group">
                         <div class="checkbox i-checks"><label> <input type="checkbox"><i></i> Agree the terms and policy </label></div>
                 </div>
-                <a type="submit" id='next_step' class="btn btn-primary block full-width m-b" href="/register" >Next step</a>
+                <button type="submit" class="btn btn-primary block full-width m-b">Next step</button>
 
                 <p class="text-muted text-center"><small>Already have an account?</small></p>
                 <a class="btn btn-sm btn-white btn-block" href="/">Login</a>
@@ -76,12 +76,12 @@
         });
     </script>
 
-    <script>
-        var sel = document.getElementById('selected');
-        sel.onchange = function () {
-            document.getElementById("next_step").href = this.value + "_register";
-        }
-    </script>
+    <!--<script>-->
+        <!--var sel = document.getElementById('selected');-->
+        <!--sel.onchange = function () {-->
+            <!--document.getElementById("next_step").href = this.value + "_register";-->
+        <!--}-->
+    <!--</script>-->
 
 
 
