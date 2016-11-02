@@ -30,8 +30,8 @@
             <form method="post" class="m-t" role="form" action="">
                 {% csrf_token %}
                 <div class="form-group">
-                    <select name="role" id='selected' class="select2_demo_3 form-control">
-                        <option selected disabled>Please choose role:</option>
+                    <select name="role" id='selected' class="select2_demo_3 form-control" required>
+                        <option value="">Please choose role:</option>
                         <option value="parent">Parent</option>
                         <option value="judges" >Judge</option>
                         <option value="chair">School Chair</option>
@@ -49,8 +49,9 @@
                     <input name="password" type="password" class="form-control" placeholder="Password" required="">
                 </div>
                 <div class="form-group">
-                        <div class="checkbox i-checks"><label> <input type="checkbox"><i></i> Agree the terms and policy </label></div>
+                        <div class="checkbox i-checks" ><label> <input required="" type="checkbox"><i></i> Agree the terms and policy </label></div>
                 </div>
+                <input type="hidden" name="post" value="yes" />
                 <button type="submit" class="btn btn-primary block full-width m-b">Next step</button>
 
                 <p class="text-muted text-center"><small>Already have an account?</small></p>

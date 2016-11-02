@@ -17,60 +17,61 @@
 </head>
 
 <body class="gray-bg">
-
     <div style="margin-top:-70px"  class="loginColumns animated fadeInDown">
         <div><h3>Register to SchoolSaas as Parent</h3></div>
         <div class="ibox-content">
-            <form method="get" class="form-horizontal">
-
+            <form method="post" class="form-horizontal" action="">
+                {% csrf_token %}
                 <div class="form-group"><label class="col-sm-2 control-label">School</label>
                     <div class="col-sm-10">
-                        <select class="select2_demo_3 form-control">
-                            <option selected disabled>Please choose:</option>
-                            <option value="1">School 1</option>
-                            <option value="2">School 2</option>
-                            <option value="3">School 3</option>
+                        <select name="school" required class="select2_demo_3 form-control">
+                            <option value="">Please choose:</option>
+                            {% for school in schools %}
+                                <option value="{{ school.name }}">{{ school.name }}</option>
+                            {% endfor %}
                         </select>
                      </div>
                 </div>
                 <div class="hr-line-dashed"></div>
                 <div class="form-group"><label class="col-sm-2 control-label">Mail address 1</label>
 
-                    <div class="col-sm-10"><input type="text" placeholder="Mail address 1" class="form-control"></div>
+                    <div class="col-sm-10"><input name="address1" required="" type="text" placeholder="Mail address 1" class="form-control"></div>
                 </div>
                 <div class="hr-line-dashed"></div>
                 <div class="form-group"><label class="col-sm-2 control-label">Mail address 2</label>
 
-                    <div class="col-sm-10"><input type="text" placeholder="Mail address 2" class="form-control"></div>
+                    <div class="col-sm-10"><input name="address2" type="text" placeholder="Mail address 2" class="form-control"></div>
                 </div>
                 <div class="hr-line-dashed"></div>
                 <div class="form-group"><label class="col-sm-2 control-label">City</label>
 
-                    <div class="col-sm-10"><input type="text" placeholder="City" class="form-control"></div>
+                    <div class="col-sm-10"><input name="city" required="" type="text" placeholder="City" class="form-control"></div>
                 </div>
                 <div class="hr-line-dashed"></div>
                 <div class="form-group"><label class="col-sm-2 control-label">State</label>
 
-                    <div class="col-sm-10"><input type="text" placeholder="State" class="form-control"></div>
+                    <div class="col-sm-10"><input name="state" required="" type="text" placeholder="State" class="form-control"></div>
                 </div>
                 <div class="hr-line-dashed"></div>
-                <div class="form-group"><label class="col-sm-2 control-label">Zipcode</label>
-
-                    <div class="col-sm-10"><input type="text" placeholder="Zipcode" class="form-control"></div>
+                    {% if not er1 %}
+                        <div class="form-group"><label class="col-sm-2 control-label">Zipcode</label>
+                    {% else %}
+                            <div class="form-group"><label class="col-sm-2 control-label"><p style="color:red;">Zipcode</p></label>
+                    {% endif %}
+                    <div class="col-sm-10"><input name="zipcode" required="" type="text" placeholder="Zipcode" class="form-control"></div>
                 </div>
                 <div class="hr-line-dashed"></div>
 
                 <div class="form-group"><label class="col-sm-2 control-label">Phone</label>
 
-                    <div class="col-sm-10"><input type="text" placeholder="Phone" class="form-control"></div>
+                    <div class="col-sm-10"><input name="phone" required="" type="text" placeholder="Phone" class="form-control"></div>
                 </div>
 
                 <div class="hr-line-dashed"></div>
                 <div class="form-group">
                     <div class="col-sm-4 col-sm-offset-2">
-                        <button class="btn btn-white" type="submit">Cancel</button>
-                        <!--<button class="btn btn-primary" type="submit">Save changes</button>-->
-                        <a type="submit" class="btn btn-primary" href="/main" >Save changes</a>
+                        <input type="hidden" name="post" value="yes" />
+                        <button class="btn btn-primary" type="submit">Save changes</button>
                     </div>
                 </div>
             </form>

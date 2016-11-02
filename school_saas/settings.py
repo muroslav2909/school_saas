@@ -50,6 +50,8 @@ INSTALLED_APPS = [
 #     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 # ]
 
+# LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/'
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

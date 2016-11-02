@@ -3,18 +3,6 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
-class PTABoard(models.Model):
-    role = models.CharField(max_length=50, null=True, blank=True)
-    first_name = models.CharField(max_length=50, null=True, blank=True)
-    last_name = models.CharField(max_length=50, null=True, blank=True)
-    email = models.EmailField(blank=True, null=True)
-    phone = models.IntegerField(null=True, blank=True)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-
-    def __unicode__(self):
-        return unicode(self.first_name + self.last_name)
-
 class School(models.Model):
     name = models.CharField(max_length=50, null=True, blank=True)
     address_1 = models.CharField(max_length=100, null=True, blank=True)
@@ -22,7 +10,6 @@ class School(models.Model):
     city = models.CharField(max_length=100, null=True, blank=True)
     state = models.CharField(max_length=100, null=True, blank=True)
     zipcode = models.PositiveIntegerField(max_length=100, null=True, blank=True)
-    pta = models.ManyToManyField(PTABoard)
     pta_paid = models.BooleanField(default=False)
     pta_paid_date = models.DateTimeField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -31,13 +18,25 @@ class School(models.Model):
     def __unicode__(self):
         return unicode(self.name)
 
+class PTABoard(models.Model):
+    role = models.CharField(max_length=50, null=True, blank=True)
+    first_name = models.CharField(max_length=50, null=True, blank=True)
+    last_name = models.CharField(max_length=50, null=True, blank=True)
+    email = models.EmailField(blank=True, null=True)
+    phone = models.CharField(max_length=50, null=True, blank=True)
+    school = models.ManyToManyField(School)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return unicode(self.first_name + self.last_name)
 
 class Volunteer(models.Model):
     school = models.ManyToManyField(School)
     first_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)
     email = models.EmailField(blank=True, null=True)
-    phone = models.IntegerField(null=True, blank=True)
+    phone = models.CharField(max_length=50, null=True, blank=True)
 
     def __unicode__(self):
         return unicode(self.first_name + self.last_name)
@@ -69,7 +68,7 @@ class Admin(models.Model):
     school = models.ManyToManyField(School)
     first_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)
-    phone = models.IntegerField(null=True, blank=True)
+    phone = models.CharField(max_length=50, null=True, blank=True)
 
     def __unicode__(self):
         return unicode(self.first_name + self.last_name)
@@ -78,14 +77,14 @@ class Judge(models.Model):
     user = models.ForeignKey(User)
     first_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)
-    phone = models.IntegerField(null=True, blank=True)
+    phone = models.CharField(max_length=50, null=True, blank=True)
     organisation = models.CharField(max_length=50, null=True, blank=True)
     school = models.ManyToManyField(School)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return unicode(self.first_name + self.last_name)
+        return unicode(self.id)
 
 
 class Parent(models.Model):
@@ -98,12 +97,12 @@ class Parent(models.Model):
     city = models.CharField(max_length=100, null=True, blank=True)
     state = models.CharField(max_length=100, null=True, blank=True)
     zipcode = models.PositiveIntegerField(max_length=100, null=True, blank=True)
-    phone = models.IntegerField(null=True, blank=True)
+    phone = models.CharField(max_length=50, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return unicode(self.first_name + self.last_name)
+        return unicode(self.id)
 
 
 class Child(models.Model):
@@ -114,7 +113,7 @@ class Child(models.Model):
     class_teacher_name = models.CharField(max_length=50, null=True, blank=True)
 
     def __unicode__(self):
-        return unicode(self.first_name + self.last_name)
+        return unicode(self.id)
 
 class Entry(models.Model):
     child = models.ManyToManyField(Child)
