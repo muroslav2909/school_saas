@@ -17,12 +17,12 @@ def home(request):
         email = request.POST['email']
         password = request.POST['password']
         auth = authenticate(username=email, password=password)
-        if auth is not None:
-            # login(request, auth)
+        # if auth is not None:
+        #     login(request, auth)
             # auth_login(request, User.objects.get(username=email, password=password))
-            return redirect("/main")
-        else:
-            context = {'er1': 'yes'}
+        return redirect("/main")
+        # else:
+        #     context = {'er1': 'yes'}
     return render(request, "auth/login.html", context)
 
 def register(request):
