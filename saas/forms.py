@@ -20,3 +20,13 @@ class JudgesRegistration(forms.Form):
     organisation = forms.CharField()
     category = forms.CharField()
     phone = forms.CharField()
+
+
+class ChairRegistration(forms.Form):
+    school = forms.CharField()
+    address_1 = forms.CharField()
+    address_2 = forms.CharField()
+    city = forms.CharField()
+    state = forms.CharField()
+    zipcode = forms.IntegerField()
+    phone = forms.CharField()
