@@ -79,7 +79,7 @@ class Judge(models.Model):
     last_name = models.CharField(max_length=50, null=True, blank=True)
     phone = models.CharField(max_length=50, null=True, blank=True)
     organisation = models.CharField(max_length=50, null=True, blank=True)
-    school = models.ManyToManyField(School)
+    # school = models.ManyToManyField(School)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

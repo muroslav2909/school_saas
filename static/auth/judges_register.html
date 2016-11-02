@@ -21,31 +21,30 @@
     <div class="loginColumns animated fadeInDown">
         <div><h3>Register to SchoolSaas as Judge</h3></div>
         <div style="margin-top:25px" class="ibox-content">
-            <form method="get" class="form-horizontal">
-
+            <form method="post" action="" class="form-horizontal">
+                {% csrf_token %}
                 <div class="form-group"><label class="col-sm-2 control-label">Organisation</label>
 
-                    <div class="col-sm-10"><input type="text" placeholder="Organisation" class="form-control"></div>
+                    <div class="col-sm-10"><input required="" name="organisation" type="text" placeholder="Organisation" class="form-control"></div>
                 </div>
                 <div class="hr-line-dashed"></div>
 
                 <div class="form-group"><label class="col-sm-2 control-label">Category</label>
 
-                    <div class="col-sm-10"><input type="text" placeholder="Category" class="form-control"></div>
+                    <div class="col-sm-10"><input required="" name="category" type="text" placeholder="Category" class="form-control"></div>
                 </div>
                 <div class="hr-line-dashed"></div>
 
                 <div class="form-group"><label class="col-sm-2 control-label">Phone</label>
 
-                    <div class="col-sm-10"><input type="text" placeholder="Phone" class="form-control"></div>
+                    <div class="col-sm-10"><input required="" name="phone" type="text" placeholder="Phone" class="form-control"></div>
                 </div>
 
                 <div class="hr-line-dashed"></div>
                 <div class="form-group">
                     <div class="col-sm-4 col-sm-offset-2">
-                        <button class="btn btn-white" type="submit">Cancel</button>
-                        <!--<button class="btn btn-primary" type="submit">Save changes</button>-->
-                        <a type="submit" class="btn btn-primary" href="/main" >Save changes</a>
+                        <input type="hidden" name="post" value="yes" />
+                        <button class="btn btn-primary" type="submit">Save changes</button>
                     </div>
                 </div>
             </form>

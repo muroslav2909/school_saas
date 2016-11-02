@@ -16,3 +16,7 @@ class ParentRegistration(forms.Form):
     phone = forms.CharField()
 
 
+class JudgesRegistration(forms.Form):
+    organisation = forms.CharField()
+    category = forms.CharField()
+    phone = forms.CharField()
