@@ -13,6 +13,7 @@ def home(request):
         password = request.POST['password']
         auth = authenticate(username=email, password=password)
         if auth is not None:
+            auth = authenticate(username=email, password=password)
             login(request, auth)
             return redirect("/main")
         else:
