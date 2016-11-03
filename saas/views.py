@@ -5,24 +5,24 @@ from saas.forms import FirstStepRegistration, ParentRegistration, JudgesRegistra
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from saas.models import Parent, School, Judge, Admin
-from django.contrib.auth import (
-    REDIRECT_FIELD_NAME, get_user_model, login as auth_login,
-    logout as auth_logout, update_session_auth_hash,
-)
+# from django.contrib.auth import (
+#     REDIRECT_FIELD_NAME, get_user_model, login as auth_login,
+#     logout as auth_logout, update_session_auth_hash,
+# )
 
 def home(request):
     context = {}
-    auth_logout(request)
+    # auth_logout(request)
     if request.method == 'POST' and request.POST['post']:
         email = request.POST['email']
         password = request.POST['password']
         auth = authenticate(username=email, password=password)
-        # if auth is not None:
-        #     login(request, auth)
+        if auth is not None:
+            login(request, auth)
             # auth_login(request, User.objects.get(username=email, password=password))
-        return redirect("/main")
-        # else:
-        #     context = {'er1': 'yes'}
+            return redirect("/main")
+        else:
+            context = {'er1': 'yes'}
     return render(request, "auth/login.html", context)
 
 def register(request):
@@ -111,7 +111,7 @@ def chair_register(request):
 # @login_required
 def main(request):
     context = {}
-    # print "request.userrequest.userrequest.userrequest.userrequest.userrequest.user", request.user
+    print "request.userrequest.userrequest.userrequest.userrequest.userrequest.user", request.user
     # try:
     #     p = Parent.objects.get(user=request.user)
     # except: p = None
