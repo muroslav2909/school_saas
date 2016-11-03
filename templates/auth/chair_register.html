@@ -46,6 +46,18 @@
             <form method="post" action="" class="form-horizontal">
                 {% csrf_token %}
 
+                <div class="form-group"><label class="col-sm-2 control-label">First Names *</label>
+                    <div class="col-sm-10"><input name="first_name" pattern=".{3,}" title="Minimum 3 characters required" required="" type="text" placeholder="First Name" class="form-control"></div>
+                </div>
+                <div class="hr-line-dashed"></div>
+
+
+                <div class="form-group"><label class="col-sm-2 control-label">Last Name *</label>
+                    <div class="col-sm-10"><input name="last_name"  pattern=".{3,}" title="Minimum 3 characters required" required="" type="text" placeholder="Last Name" class="form-control"></div>
+                </div>
+                <div class="hr-line-dashed"></div>
+
+
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Phone *</label>
                     <div class="col-sm-10">
@@ -91,19 +103,19 @@
                 <div class="hr-line-dashed"></div>
 
 
-                <div class="form-group"><label class="col-sm-2 control-label">PTA paid *</label>
+                <div class="form-group"><label class="col-sm-2 control-label">PTA paid</label>
                     <div class="col-sm-10">
-                        <div class="i-checks "><label> <input required=""  type="checkbox" value=""> <i></i> Option two checked </label></div>
+                        <div class="i-checks "><label style="margin-right:10px"> <input type="checkbox" value=""> <i></i></label>Yes/No</div>
                     </div>
                 </div>
-
+                <div class="hr-line-dashed"></div>
 
                 <div class="form-group"><label class="col-sm-2 control-label">PTA dues paid date</label>
                     <div class="col-sm-10">
                         <div class="form-group" id="data_1">
                             <label class="font-noraml"></label>
                             <div class="input-group date">
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input required="" type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" title="Date format required: mm/dd/yyyy" class="form-control" placeholder="PTA dues paid date">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" title="Date format required: mm/dd/yyyy" class="form-control" placeholder="PTA dues paid date">
                             </div>
                         </div>
                     </div>

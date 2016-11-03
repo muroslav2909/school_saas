@@ -93,9 +93,16 @@ def chair_register(request):
             state = form.cleaned_data['state']
             zipcode = form.cleaned_data['zipcode']
             phone = form.cleaned_data['phone']
-            school = School(name=form.cleaned_data['school'], address_1=address_1, address_2=address_2, city=city, state=state, zipcode=zipcode)
+            pta_paid_date = form.cleaned_data['pta_paid_date']
+            pta_paid = form.cleaned_data['pta_paid']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            school = School(name=form.cleaned_data['school'], pta_paid=pta_paid, pta_paid_date=pta_paid_date, address_1=address_1, address_2=address_2, city=city, state=state, zipcode=zipcode)
             school.save()
-            admin, created = Admin.objects.get_or_create(user=request.user, defaults={'phone': phone})
+            admin, created = Admin.objects.get_or_create(user=request.user, defaults={'phone': phone,
+                                                                                      'first_name': first_name,
+                                                                                      'last_name': last_name,
+                                                                                      })
             admin.school.add(school)
             admin.save()
 
@@ -106,10 +113,19 @@ def chair_register(request):
 def main(request):
     context = {}
     print "request.userrequest.userrequest.userrequest.userrequest.userrequest.user", request.user
-    if Parent.objects.get(user=request.user):
-        return render(request, "auth/parent.html", context)
-    if Judge.objects.get(user=request.user):
-        return render(request, "auth/judges.html", context)
-    if Admin.objects.get(user=request.user):
-        return render(request, "auth/chair.html", context)
+    try:
+        if Parent.objects.get(user=request.user):
+            return render(request, "auth/parent.html", context)
+    except:
+        pass
+    try:
+        if Judge.objects.get(user=request.user):
+            return render(request, "auth/judges.html", context)
+    except:
+        pass
+    try:
+        if Admin.objects.get(user=request.user):
+            return render(request, "auth/chair.html", context)
+    except:
+        pass
 

@@ -31,4 +31,8 @@ class ChairRegistration(forms.Form):
     city = forms.CharField()
     state = forms.CharField()
     zipcode = forms.IntegerField()
+    first_name = forms.CharField()
+    last_name = forms.CharField()
     phone = forms.CharField()
+    pta_paid = forms.BooleanField(required=False)
+    pta_paid_date = forms.DateField(required=False)
