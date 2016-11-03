@@ -29,7 +29,7 @@ class PTABoard(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return unicode(self.first_name + self.last_name)
+        return unicode(self.id)
 
 class Volunteer(models.Model):
     school = models.ManyToManyField(School)
@@ -39,7 +39,7 @@ class Volunteer(models.Model):
     phone = models.CharField(max_length=50, null=True, blank=True)
 
     def __unicode__(self):
-        return unicode(self.first_name + self.last_name)
+        return unicode(self.id)
 
 
 class Task(models.Model):
@@ -71,7 +71,7 @@ class Admin(models.Model):
     phone = models.CharField(max_length=50, null=True, blank=True)
 
     def __unicode__(self):
-        return unicode(self.first_name + self.last_name)
+        return unicode(self.id)
 
 class Judge(models.Model):
     user = models.ForeignKey(User)

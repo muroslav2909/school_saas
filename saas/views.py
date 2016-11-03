@@ -25,7 +25,6 @@ def register(request):
         form = FirstStepRegistration(request.POST)
         if form.is_valid():
             role = request.POST['role']
-            full_name = form.cleaned_data['full_name']
             password = form.cleaned_data['password']
             email = form.cleaned_data['email']
             auth = authenticate(username=email, password=password)
@@ -47,6 +46,8 @@ def parent_register(request):
     if request.method == 'POST' and request.POST['post']:
         form = ParentRegistration(request.POST)
         if form.is_valid():
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
             school = School.objects.get(name=form.cleaned_data['school'])
             mailing_address_1 = form.cleaned_data['address1']
             mailing_address_2 = form.cleaned_data['address2']
@@ -54,12 +55,10 @@ def parent_register(request):
             state = form.cleaned_data['state']
             zipcode = form.cleaned_data['zipcode']
             phone = form.cleaned_data['phone']
-            parent, created = Parent.objects.get_or_create(user=request.user, defaults = {'mailing_address_1': mailing_address_1, 'mailing_address_2': mailing_address_2, 'state': state, 'city': city, 'zipcode': zipcode, 'phone': phone})
+            parent, created = Parent.objects.get_or_create(user=request.user, defaults = {'first_name': first_name, 'last_name': last_name, 'mailing_address_1': mailing_address_1, 'mailing_address_2': mailing_address_2, 'state': state, 'city': city, 'zipcode': zipcode, 'phone': phone})
             parent.school.add(school)
             parent.save()
             return redirect('/main')
-        else:
-            context = {'er1': 'yes', "schools": schools}
     return render(request, "auth/parent_register.html", context)
 
 @login_required
@@ -70,10 +69,14 @@ def judges_register(request):
         if form.is_valid():
             organisation = form.cleaned_data['organisation']
             phone = form.cleaned_data['phone']
-            category = form.cleaned_data['category']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
             judge, created = Judge.objects.get_or_create(user=request.user,
                                                            defaults={'organisation': organisation,
-                                                                     'phone': phone})
+                                                                     'first_name': first_name,
+                                                                     'last_name': last_name,
+                                                                     'phone': phone,
+                                                                     })
             judge.save()
             return redirect('/main')
     return render(request, "auth/judges_register.html", context)
