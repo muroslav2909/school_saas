@@ -28,13 +28,14 @@ def register(request):
             password = form.cleaned_data['password']
             email = form.cleaned_data['email']
             user, created = User.objects.get_or_create(username=email, password=password)
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
             user.save()
             auth = authenticate(username=user.username, password=user.password)
             if not created:
                 login(request, auth)
                 return redirect("/main")
 
-            login(request, auth)
+            login(request, user)
             path = "%s_register" % role
 
             return redirect(path)
