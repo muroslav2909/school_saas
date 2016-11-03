@@ -27,14 +27,15 @@ def register(request):
             role = request.POST['role']
             password = form.cleaned_data['password']
             email = form.cleaned_data['email']
-            auth = authenticate(username=email, password=password)
-            if auth is not None:
+            user, created = User.objects.get_or_create(username=email, password=password)
+            auth = authenticate(username=user.username, password=user.password)
+            if not created:
                 login(request, auth)
                 return redirect("/main")
-            user = User(username=email, email=email, password=password)
-            user.save()
+
+            login(request, auth)
             path = "%s_register" % role
-            login(request, user)
+
             return redirect(path)
     return render(request, "auth/register.html", context)
 
