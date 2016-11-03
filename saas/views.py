@@ -28,6 +28,7 @@ def register(request):
             password = form.cleaned_data['password']
             email = form.cleaned_data['email']
             user, created = User.objects.get_or_create(username=email, password=password)
+            user.save()
             auth = authenticate(username=user.username, password=user.password)
             if not created:
                 login(request, auth)
