@@ -16,6 +16,7 @@ def home(request):
             user, created = User.objects.get_or_create(username=email, password=password)
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             user.save()
+            auth = authenticate(username=email, password=password)
             return redirect("/main")
         if auth is not None:
             login(request, auth)
