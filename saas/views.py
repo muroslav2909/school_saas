@@ -57,8 +57,6 @@ def parent_register(request):
             parent, created = Parent.objects.get_or_create(user=request.user, defaults = {'mailing_address_1': mailing_address_1, 'mailing_address_2': mailing_address_2, 'state': state, 'city': city, 'zipcode': zipcode, 'phone': phone})
             parent.school.add(school)
             parent.save()
-            # if not request.user.is_authenticated():
-            #     login(request, request.user)
             return redirect('/main')
         else:
             context = {'er1': 'yes', "schools": schools}
@@ -104,23 +102,11 @@ def chair_register(request):
 @login_required
 def main(request):
     context = {}
-
     print "request.userrequest.userrequest.userrequest.userrequest.userrequest.user", request.user
-    try:
-        p = Parent.objects.get(user=request.user)
-    except: p = None
-    try:
-        j = Judge.objects.get(user=request.user)
-    except:
-        j = None
-    try:
-        c = Admin.objects.get(user=request.user)
-    except:
-        c = None
-    if p:
+    if Parent.objects.get(user=request.user):
         return render(request, "auth/parent.html", context)
-    if j:
+    if Judge.objects.get(user=request.user):
         return render(request, "auth/judges.html", context)
-    if c:
+    if Admin.objects.get(user=request.user):
         return render(request, "auth/chair.html", context)
 
