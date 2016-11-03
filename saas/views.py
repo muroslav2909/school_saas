@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from saas.forms import FirstStepRegistration, ParentRegistration, JudgesRegistration, ChairRegistration
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
@@ -11,15 +11,14 @@ def home(request):
     if request.method == 'POST' and request.POST['post']:
         email = request.POST['email']
         password = request.POST['password']
-        auth = authenticate(username=email, password=password)
-        if request.user.is_authenticated():
-            user, created = User.objects.get_or_create(username=email, password=password)
+        user, created = User.objects.get_or_create(username=email, password=password)
+        if not created:
+            print "not created"
+            logout(request)
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             user.save()
             auth = authenticate(username=email, password=password)
-            return redirect("/main")
-        if auth is not None:
-            login(request, auth)
+            login(request, user)
             return redirect("/main")
         else:
             context = {'er1': 'yes'}
