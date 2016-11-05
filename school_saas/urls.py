@@ -20,9 +20,12 @@ from saas import views
 from django.conf.urls.static import static
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin', admin.site.urls),
     url(r'^$', views.home, name='home'),
+    url(r'^main_login', views.main_login, name='main_login'),
+    url(r'^forgot_password', views.forgot_password, name='forgot_password'),
     url(r'^register', views.register, name='register'),
+    url(r'^intermid', views.intermid, name='intermid'),
     url(r'^parent_register', views.parent_register, name='parent_register'),
     url(r'^judges_register', views.judges_register, name='judges_register'),
     url(r'^chair_register', views.chair_register, name='chair_register'),

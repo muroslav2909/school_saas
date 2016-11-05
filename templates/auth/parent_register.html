@@ -50,6 +50,7 @@
 </head>
 
 <body class="gray-bg">
+
     <div style="margin-top:-70px"  class="loginColumns animated fadeInDown">
         <div><h3>Register to SchoolSaas as Parent</h3></div>
         <div class="ibox-content">
@@ -82,7 +83,7 @@
 
 
                 <div class="form-group"><label class="col-sm-2 control-label">Mail address *</label>
-                    <div class="col-sm-10"><input pattern=".{5,}" title="Minimum 5 characters required" name="address1" required="" type="text" placeholder="Mail address 1" class="form-control"></div>
+                    <div class="col-sm-10"><input id="address_1" pattern=".{5,}" title="Minimum 5 characters required" name="address1" required="" type="text" placeholder="Mail address 1" class="form-control"></div>
                 </div>
                 <div class="hr-line-dashed"></div>
 
@@ -94,19 +95,19 @@
 
 
                 <div class="form-group"><label class="col-sm-2 control-label">City *</label>
-                    <div class="col-sm-10"><input pattern=".{3,}" title="Minimum 3 characters required" name="city" required="" type="text" placeholder="City" class="form-control"></div>
+                    <div class="col-sm-10"><input id="city" pattern=".{3,}" title="Minimum 3 characters required" name="city" required="" type="text" placeholder="City" class="form-control"></div>
                 </div>
                 <div class="hr-line-dashed"></div>
 
 
                 <div class="form-group"><label class="col-sm-2 control-label">State *</label>
-                    <div class="col-sm-10"><input pattern=".{3,}" title="Minimum 3 characters required" name="state" required="" type="text" placeholder="State" class="form-control"></div>
+                    <div class="col-sm-10"><input id="state" pattern=".{3,}" title="Minimum 3 characters required" name="state" required="" type="text" placeholder="State" class="form-control"></div>
                 </div>
                 <div class="hr-line-dashed"></div>
 
 
                 <div class="form-group"><label class="col-sm-2 control-label">Zipcode *</label>
-                    <div class="col-sm-10"><input pattern="[0-9]{5}" data-mask="99999" name="zipcode" required="" title="5 digits required" type="text" placeholder="Zipcode" class="form-control"></div>
+                    <div class="col-sm-10"><input id="zip" pattern="[0-9]{5}" data-mask="99999" name="zipcode" required="" title="5 digits required" type="text" placeholder="Zipcode" class="form-control"></div>
                 </div>
                 <div class="hr-line-dashed"></div>
 
@@ -499,6 +500,41 @@
 
     </script>
 
+<script type="text/javascript">
+
+function initMap() {
+
+    var input = document.getElementById('address_1');
+    var autocomplete = new google.maps.places.Autocomplete(input);
+    console.log('autocomplete', autocomplete)
+    autocomplete.addListener('place_changed', function() {
+        var place = autocomplete.getPlace();
+        var address = '';
+        if (place.address_components) {
+            address = [
+              (place.address_components[0] && place.address_components[0].short_name || ''),
+              (place.address_components[1] && place.address_components[1].short_name || ''),
+              (place.address_components[2] && place.address_components[2].short_name || '')
+            ].join(' ');
+        }
+        //Location details
+        for (var i = 0; i < place.address_components.length; i++) {
+            if(place.address_components[i].types[0] == 'postal_code'){
+                document.getElementById('zip').value = place.address_components[i].long_name;
+            }
+            console.log(place.address_components[i])
+        }
+        var address=place.formatted_address.split(',');
+
+        //document.getElementById('country').innerHTML=((address[address.length-1] != null)?address[address.length-1]:'');
+        document.getElementById('state').value=((address[address.length-2] != null)?(address[address.length-2].replace(/[0-9]/g, '')):'');
+        document.getElementById('city').value=((address[address.length-3] != null)?address[address.length-3]:'');
+       // document.getElementById('lat').innerHTML = place.geometry.location.lat();
+        //document.getElementById('lon').innerHTML = place.geometry.location.lng();
+    });
+}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAorGXTUrQYGnHTwv0Kgy91PWxOK_16ZKw&libraries=places&callback=initMap" async defer></script>
 
 
 
