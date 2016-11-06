@@ -49,3 +49,14 @@ class PTABoardRegistration(forms.Form):
     last_name = forms.CharField()
     email = forms.EmailField()
     phone = forms.CharField()
+
+
+class SchoolRegistration(forms.Form):
+    school = forms.CharField()
+    address_1 = forms.CharField()
+    address_2 = forms.CharField(required=False)
+    city = forms.CharField()
+    state = forms.CharField()
+    zipcode = forms.IntegerField()
+    pta_paid = forms.BooleanField(required=False)
+    pta_paid_date = forms.DateField(required=False)

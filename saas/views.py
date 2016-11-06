@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from saas.forms import FirstStepRegistration, ParentRegistration, JudgesRegistration, ChairRegistration, VolunteerRegistration, PTABoardRegistration
+from saas.forms import FirstStepRegistration, ParentRegistration, SchoolRegistration, JudgesRegistration, ChairRegistration, VolunteerRegistration, PTABoardRegistration
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from saas.models import Parent, School, Judge, Admin, Volunteer, PTABoard
@@ -300,5 +300,46 @@ def pta_board(request):
 
 
 def school(request):
-    context = {}
+
+    chair = Admin.objects.get(user=request.user)
+    school = School.objects.get(id=chair.school.all()[0].id)
+    last_modification = school.updated
+    context = {
+        'school': school,
+        'last_modification': last_modification,
+    }
+    try:
+        # try:
+        #
+        # except:
+        #     pass
+        try:
+            old_email = request.POST['old_email']
+        except:
+            pass
+        context = {
+            "first_name": chair.first_name,
+            "last_name": chair.last_name,
+            # 'school_info': school,
+            'school': school,
+            'last_modification': last_modification,
+            # 'counter': counter,
+        }
+        if request.method == 'POST' and request.POST['school']:
+            form = SchoolRegistration(request.POST)
+            if form.is_valid():
+                address_1 = form.cleaned_data['address_1']
+                address_2 = form.cleaned_data['address_2']
+                city = form.cleaned_data['city']
+                state = form.cleaned_data['state']
+                zipcode = form.cleaned_data['zipcode']
+                pta_paid_date = form.cleaned_data['pta_paid_date']
+                pta_paid = form.cleaned_data['pta_paid']
+                name = form.cleaned_data['school']
+
+                School.objects.filter(id=school.id).update(name=name, pta_paid=pta_paid, pta_paid_date=pta_paid_date,
+                                                           state=state, city=city, address_1=address_1, address_2=address_2, zipcode=zipcode )
+                return redirect('/school')
+    except:
+        pass
     return render(request, "school.html", context)
