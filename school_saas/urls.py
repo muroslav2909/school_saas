@@ -30,4 +30,5 @@ urlpatterns = [
     url(r'^judges_register', views.judges_register, name='judges_register'),
     url(r'^chair_register', views.chair_register, name='chair_register'),
     url(r'^main', views.main, name='main'),
+    url(r'^volunteers', views.volunteers, name='volunteers'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

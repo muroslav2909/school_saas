@@ -180,7 +180,22 @@ def main(request):
         pass
     try:
         if Admin.objects.get(user=request.user):
+            chair = Admin.objects.get(user=request.user)
+            context = {
+                "first_name": chair.first_name,
+                "last_name": chair.last_name,
+            }
             return render(request, "auth/chair.html", context)
     except:
         pass
 
+
+@login_required
+def volunteers(request):
+    chair = Admin.objects.get(user=request.user)
+    context = {
+        "first_name": chair.first_name,
+        "last_name": chair.last_name,
+    }
+
+    return render(request, "volunteers.html", context)

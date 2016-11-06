@@ -506,7 +506,6 @@ function initMap() {
 
     var input = document.getElementById('address_1');
     var autocomplete = new google.maps.places.Autocomplete(input);
-    console.log('autocomplete', autocomplete)
     autocomplete.addListener('place_changed', function() {
         var place = autocomplete.getPlace();
         var address = '';
