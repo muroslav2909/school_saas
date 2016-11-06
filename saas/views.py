@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from saas.forms import FirstStepRegistration, ParentRegistration, JudgesRegistration, ChairRegistration, VolunteerRegistration
+from saas.forms import FirstStepRegistration, ParentRegistration, JudgesRegistration, ChairRegistration, VolunteerRegistration, PTABoardRegistration
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
-from saas.models import Parent, School, Judge, Admin, Volunteer
+from saas.models import Parent, School, Judge, Admin, Volunteer, PTABoard
 
 def home(request):
     context = {}
@@ -192,35 +192,113 @@ def main(request):
 
 @login_required
 def volunteers(request):
-    chair = Admin.objects.get(user=request.user)
-    school = School.objects.get(id=chair.school.all()[0].id)
-    volunteers = Volunteer.objects.filter(school=school)
-    last_modification = volunteers.order_by('updated')[0].updated
-    counter = volunteers.count()
-    print "counter", counter
-    context = {
-        "first_name": chair.first_name,
-        "last_name": chair.last_name,
-        'volunteers': volunteers,
-        'school': school,
-        'last_modification': last_modification,
-        'counter': counter,
-    }
-    if request.method == 'POST' and request.POST['volunteer']:
-        form = VolunteerRegistration(request.POST)
-        if form.is_valid():
-            phone = form.cleaned_data['phone']
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            email = request.POST['email']
+    context = {}
+    volunteers = None
+    last_modification = None
+    old_email = None
+    counter = 0
+    try:
+        chair = Admin.objects.get(user=request.user)
+        school = School.objects.get(id=chair.school.all()[0].id)
+        try:
+            volunteers = Volunteer.objects.filter(school=school).order_by('-created')
+            last_modification = volunteers.order_by('updated')[0].updated
+            counter = volunteers.count()
+        except:
+            pass
+        try:
+            old_email = request.POST['old_email']
+        except:
+            pass
+        context = {
+            "first_name": chair.first_name,
+            "last_name": chair.last_name,
+            'volunteers': volunteers,
+            'school': school,
+            'last_modification': last_modification,
+            'counter': counter,
+        }
+        if request.method == 'POST' and request.POST['volunteer']:
+            form = VolunteerRegistration(request.POST)
+            if form.is_valid():
+                phone = form.cleaned_data['phone']
+                first_name = form.cleaned_data['first_name']
+                last_name = form.cleaned_data['last_name']
+                email = form.cleaned_data['email']
 
+                if not old_email:
+                    volunteer, created = Volunteer.objects.get_or_create(email=email, defaults={'phone': phone,
+                                                                                              'first_name': first_name,
+                                                                                              'last_name': last_name,
+                                                                                              })
+                    volunteer.school.add(school)
+                    volunteer.save()
 
-            volunteer, created = Volunteer.objects.get_or_create(email=email, defaults={'phone': phone,
-                                                                                      'first_name': first_name,
-                                                                                      'last_name': last_name,
-                                                                                      })
-            volunteer.school.add(school)
-            volunteer.save()
-
-            return redirect('/volunteers')
+                else:
+                    volunteer = Volunteer.objects.get(email=old_email)
+                    Volunteer.objects.filter(id=volunteer.id).update(email=email, phone=phone, first_name=first_name, last_name=last_name,)
+                return redirect('/volunteers')
+    except:
+        pass
     return render(request, "volunteers.html", context)
+
+
+@login_required
+def pta_board(request):
+    context = {}
+    pta_board = None
+    last_modification = None
+    old_email = None
+    counter = 0
+    try:
+        chair = Admin.objects.get(user=request.user)
+        school = School.objects.get(id=chair.school.all()[0].id)
+        try:
+            pta_board = PTABoard.objects.filter(school=school).order_by('-created')
+            last_modification = pta_board.order_by('updated')[0].updated
+            counter = pta_board.count()
+        except:
+            pass
+        try:
+            old_email = request.POST['old_email']
+        except:
+            pass
+        context = {
+            "first_name": chair.first_name,
+            "last_name": chair.last_name,
+            'volunteers': pta_board,
+            'school': school,
+            'last_modification': last_modification,
+            'counter': counter,
+        }
+        if request.method == 'POST' and request.POST['pta_board']:
+            form = PTABoardRegistration(request.POST)
+            if form.is_valid():
+                phone = form.cleaned_data['phone']
+                first_name = form.cleaned_data['first_name']
+                last_name = form.cleaned_data['last_name']
+                email = form.cleaned_data['email']
+                role = form.cleaned_data['last_name']
+
+                if not old_email:
+                    volunteer, created = PTABoard.objects.get_or_create(email=email, defaults={
+                                                                                              'role':role,
+                                                                                              'phone': phone,
+                                                                                              'first_name': first_name,
+                                                                                              'last_name': last_name,
+                                                                                              })
+                    volunteer.school.add(school)
+                    volunteer.save()
+
+                else:
+                    pta_board = PTABoard.objects.get(email=old_email)
+                    PTABoard.objects.filter(id=pta_board.id).update(role=role, email=email, phone=phone, first_name=first_name, last_name=last_name,)
+                return redirect('/pta_board')
+    except:
+        pass
+    return render(request, "pta_board.html", context)
+
+
+def school(request):
+    context = {}
+    return render(request, "school.html", context)

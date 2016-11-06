@@ -6,20 +6,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>INSPINIA | Empty Page</title>
+    <title>Chair | Empty Page</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
 
-    <link href="css/animate.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-
-    <link href="css/animate.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
     <link href="css/plugins/iCheck/custom.css" rel="stylesheet">
     <link href="css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
-
-
 
     <link href="css/plugins/iCheck/custom.css" rel="stylesheet">
     <link href="css/plugins/chosen/chosen.css" rel="stylesheet">
@@ -36,8 +29,12 @@
     <link href="css/plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet">
     <link href="css/plugins/select2/select2.min.css" rel="stylesheet">
     <link href="css/plugins/touchspin/jquery.bootstrap-touchspin.min.css" rel="stylesheet">
+
     <link href="css/animate.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+
+    {% block link %}{% endblock %}
+
 </head>
 
 <body class="">
@@ -67,33 +64,33 @@
                 </li>
 
 
-                <li class="active">
+                <li id="volunteers_active">
                     <a href="/volunteers"><i class="fa fa-th-large"></i> <span class="nav-label">Volunteers</span></a>
                 </li>
 
 
-                <li>
+                <li id="tasks_active">
                     <a href="/main"><i class="fa fa-diamond"></i> <span class="nav-label">Tasks</span></a>
                 </li>
 
 
-                <li>
+                <li id="judges_active">
                     <a href="/main"><i class="fa fa-pie-chart"></i> <span class="nav-label">Judges</span>  </a>
                 </li>
 
 
-                <li>
-                    <a href="/main"><i class="fa fa-flask"></i> <span class="nav-label">PTA Board</span></a>
+                <li id="pta_board_active">
+                    <a href="/pta_board"><i class="fa fa-flask"></i> <span class="nav-label">PTA Board</span></a>
                 </li>
 
 
-                <li>
-                    <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Parents</span></a>
+                <li id="parents_active">
+                    <a href="/parents"><i class="fa fa-edit"></i> <span class="nav-label">Parents</span></a>
                 </li>
 
 
-                <li>
-                    <a href="/main"><i class="fa fa-files-o"></i> <span class="nav-label">School PTA</span></a>
+                <li id="school_pta_active">
+                    <a href="/school"><i class="fa fa-files-o"></i> <span class="nav-label">School PTA</span></a>
                 </li>
             </ul>
 
@@ -205,7 +202,7 @@
 
 
                 <li>
-                    <a href="/">
+                    <a href="/main_login">
                         <i class="fa fa-sign-out"></i> Log out
                     </a>
                 </li>
@@ -245,6 +242,7 @@
 
         </div>
         </div>
+
 
     <!-- Mainly scripts -->
     <script src="js/jquery-2.1.1.js"></script>
@@ -336,9 +334,24 @@
     <!-- TouchSpin -->
     <script src="js/plugins/touchspin/jquery.bootstrap-touchspin.min.js"></script>
 
+
+    <!-- Mainly scripts -->
+    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="js/inspinia.js"></script>
+    <script src="js/plugins/pace/pace.min.js"></script>
+
+    <!-- slick carousel-->
+    <script src="js/plugins/slick/slick.min.js"></script>
+
+
     <script>
         $(document).ready(function(){
-
+            $('.product-images').slick({
+                dots: true
+            });
             var $image = $(".image-crop > img")
             $($image).cropper({
                 aspectRatio: 1.618,
@@ -637,6 +650,10 @@
 
     </script>
 
+
+
+
+{% block js %}{% endblock %}
 </body>
 
 </html>

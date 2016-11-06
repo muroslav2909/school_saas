@@ -5,7 +5,7 @@
 
 <div class="wrapper wrapper-content  animated fadeInRight">
     <div class="row">
-        <div class="col-sm-8">
+        <div id="main_div" class="col-sm-15">
             <div class="ibox">
                 <div class="ibox-content">
                     <span class="text-muted small pull-right">Last modification: <i class="fa fa-clock-o"></i> {{ last_modification }}</span>
@@ -27,13 +27,13 @@
                                         <tbody>
 
                                         {% for volunteer in volunteers %}
-                                        <tr>
+                                        <tr onclick="$('#main_div').attr('class', 'col-sm-8'); $('#block_info').show();">
                                             <td class="client-avatar"><img alt="image" src="img/nobody_m.original.jpg"> </td>
                                             <td><a data-toggle="tab" href="#contact-{{ volunteer.id }}" class="client-link">{{ volunteer.first_name }} {{ volunteer.last_name }}</a></td>
-                                            <td> {{ school }}</td>
+                                            <td><a data-toggle="tab" href="#contact-{{ volunteer.id }}" class="client-link"> {{ school }}</a></td>
                                             <td class="contact-type"><i class="fa fa-envelope"> </i></td>
-                                            <td> {{ volunteer.email }}</td>
-                                            <td class="client-status"><span class="label label-primary">Active</span></td>
+                                            <td><a data-toggle="tab" href="#contact-{{ volunteer.id }}" class="client-link"> {{ volunteer.email }}</a></td>
+                                            <td class="client-status"><span class="label label-primary"><a data-toggle="tab" href="#contact-{{ volunteer.id }}" class="client-link">Active</a></span></td>
                                         </tr>
                                         {% endfor %}
 
@@ -50,20 +50,23 @@
                                     <form style="margin-top:25px;" method="post" action="" class="form-horizontal">
                                         {% csrf_token %}
 
+                                        <div class="col-sm-10" style="display:none"><input id="old_email" name="old_email" type="text" class="form-control"></div>
+
+
                                         <div class="form-group"><label class="col-sm-2 control-label">First Name *</label>
-                                            <div class="col-sm-10"><input name="first_name" pattern=".{3,}" title="Minimum 3 characters required" required="" type="text" placeholder="First Name" class="form-control"></div>
+                                            <div class="col-sm-10"><input id="first_name" name="first_name" pattern=".{3,}" title="Minimum 3 characters required" required="" type="text" placeholder="First Name" class="form-control"></div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
 
 
                                         <div class="form-group"><label class="col-sm-2 control-label">Last Name *</label>
-                                            <div class="col-sm-10"><input name="last_name"  pattern=".{3,}" title="Minimum 3 characters required" required="" type="text" placeholder="Last Name" class="form-control"></div>
+                                            <div class="col-sm-10"><input id="last_name" name="last_name"  pattern=".{3,}" title="Minimum 3 characters required" required="" type="text" placeholder="Last Name" class="form-control"></div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
 
 
                                         <div class="form-group"><label class="col-sm-2 control-label">Email *</label>
-                                            <div class="col-sm-10"><input required="" name="email" type="email" placeholder="Email" class="form-control"></div>
+                                            <div class="col-sm-10"><input id="email" required="" name="email" type="email" placeholder="Email" class="form-control"></div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
 
@@ -71,7 +74,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Phone *</label>
                                             <div class="col-sm-10">
-                                                <input type="text" name="phone" required="" class="form-control" data-mask="(999) 999-9999" placeholder="Phone">
+                                                <input type="text" id="phone" name="phone" required="" class="form-control" data-mask="(999) 999-9999" placeholder="Phone">
                                             </div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
@@ -96,7 +99,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-4">
+        <div style="display:none;" class="col-sm-4" id="block_info">
             <div class="ibox ">
 
                 <div class="ibox-content">
@@ -104,7 +107,7 @@
 
 
                         {% for volunteer in volunteers %}
-                            <div id="contact-{{ volunteer.id }}" class="tab-pane active">
+                            <div id="contact-{{ volunteer.id }}" class="tab-pane">
                                 <div class="row m-b-lg">
 
                                     <h2>{{ volunteer.first_name }} {{ volunteer.last_name }}</h2>
@@ -116,11 +119,12 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-8">
+                                        <a data-toggle="tab" href="#tab-2"><button onclick="FillForm('{{ volunteer.first_name }}', '{{ volunteer.last_name }}', '{{ volunteer.email }}', '{{ volunteer.phone }}')" type="button" class="btn btn-primary btn-sm btn-block">
+                                            <i class="fa fa-edit"></i>   Edit info
+                                        </button></a>
+                                         </br>
                                         <button type="button" class="btn btn-primary btn-sm btn-block"><i
-                                                class="fa fa-info-circle"></i>   Edit info
-                                        </button>
-                                        <button type="button" class="btn btn-primary btn-sm btn-block"><i
-                                                class="fa fa-envelope"></i> Send Message
+                                                class="fa fa-envelope"></i> Send Invitation
                                         </button>
                                     </div>
                                 </div>
@@ -165,5 +169,27 @@
         </div>
     </div>
 </div>
+
+{% endblock %}
+
+
+{% block js %}
+
+<script> function FillForm(first_name, last_name, email, phone) {
+    document.getElementById("old_email").value=email;
+    document.getElementById("first_name").value=first_name;
+    document.getElementById("last_name").value=last_name;
+    document.getElementById("email").value=email;
+    document.getElementById("phone").value=phone;
+    }
+</script>
+
+
+<script>
+        function codeAddress() {
+            $('#volunteers_active').attr('class', 'active');
+        }
+        window.onload = codeAddress;
+</script>
 
 {% endblock %}
