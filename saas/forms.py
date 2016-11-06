@@ -36,3 +36,9 @@ class ChairRegistration(forms.Form):
     phone = forms.CharField()
     pta_paid = forms.BooleanField(required=False)
     pta_paid_date = forms.DateField(required=False)
+
+class VolunteerRegistration(forms.Form):
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    email = forms.EmailField()
+    phone = forms.CharField()

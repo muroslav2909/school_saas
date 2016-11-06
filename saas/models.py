@@ -37,6 +37,8 @@ class Volunteer(models.Model):
     last_name = models.CharField(max_length=50, null=True, blank=True)
     email = models.EmailField(blank=True, null=True)
     phone = models.CharField(max_length=50, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     def __unicode__(self):
         return unicode(self.id)

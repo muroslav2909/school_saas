@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from saas.forms import FirstStepRegistration, ParentRegistration, JudgesRegistration, ChairRegistration
+from saas.forms import FirstStepRegistration, ParentRegistration, JudgesRegistration, ChairRegistration, VolunteerRegistration
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
-from saas.models import Parent, School, Judge, Admin
+from saas.models import Parent, School, Judge, Admin, Volunteer
 
 def home(request):
     context = {}
@@ -193,9 +193,34 @@ def main(request):
 @login_required
 def volunteers(request):
     chair = Admin.objects.get(user=request.user)
+    school = School.objects.get(id=chair.school.all()[0].id)
+    volunteers = Volunteer.objects.filter(school=school)
+    last_modification = volunteers.order_by('updated')[0].updated
+    counter = volunteers.count()
+    print "counter", counter
     context = {
         "first_name": chair.first_name,
         "last_name": chair.last_name,
+        'volunteers': volunteers,
+        'school': school,
+        'last_modification': last_modification,
+        'counter': counter,
     }
+    if request.method == 'POST' and request.POST['volunteer']:
+        form = VolunteerRegistration(request.POST)
+        if form.is_valid():
+            phone = form.cleaned_data['phone']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            email = request.POST['email']
 
+
+            volunteer, created = Volunteer.objects.get_or_create(email=email, defaults={'phone': phone,
+                                                                                      'first_name': first_name,
+                                                                                      'last_name': last_name,
+                                                                                      })
+            volunteer.school.add(school)
+            volunteer.save()
+
+            return redirect('/volunteers')
     return render(request, "volunteers.html", context)
