@@ -3,6 +3,16 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
+NEW = 'new'
+IN_PROGRESS = 'in_progress'
+DONE = 'done'
+
+TASK_STATUS = (
+    (NEW, 'NEW'),
+    (IN_PROGRESS, 'IN_PROGRESS'),
+    (DONE, 'DONE'),
+)
+
 class School(models.Model):
     name = models.CharField(max_length=50, null=True, blank=True)
     address_1 = models.CharField(max_length=100, null=True, blank=True)
@@ -52,7 +62,11 @@ class Task(models.Model):
     task_exp_end_date = models.DateTimeField(null=True, blank=True)
     task_actual_start_date = models.DateTimeField(null=True, blank=True)
     task_actual_end_date = models.DateTimeField(null=True, blank=True)
-    asignee = models.ManyToManyField(User)
+    status = models.CharField(max_length=50,  choices=TASK_STATUS, null=True, blank=True)
+    comments = models.CharField(max_length=500, null=True, blank=True)
+    asignee = models.ForeignKey(Volunteer, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated = models.DateTimeField(auto_now=True, null=True, blank=True)
 
 class Expenses(models.Model):
     school = models.ManyToManyField(School)

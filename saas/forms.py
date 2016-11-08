@@ -60,3 +60,16 @@ class SchoolRegistration(forms.Form):
     zipcode = forms.IntegerField()
     pta_paid = forms.BooleanField(required=False)
     pta_paid_date = forms.DateField(required=False)
+
+
+class TaskRegistration(forms.Form):
+    task_category = forms.CharField()
+    task_description = forms.CharField(required=False)
+    task_exp_start_date = forms.DateField(required=False)
+    task_exp_end_date = forms.DateField(required=False)
+    task_actual_start_date = forms.DateField(required=False)
+    task_actual_end_date = forms.DateField(required=False)
+    status = forms.CharField(required=False)
+    comments = forms.CharField(required=False)
+
+

@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from saas.forms import FirstStepRegistration, ParentRegistration, SchoolRegistration, JudgesRegistration, ChairRegistration, VolunteerRegistration, PTABoardRegistration
+from saas.forms import FirstStepRegistration, ParentRegistration, SchoolRegistration, \
+    JudgesRegistration, ChairRegistration, VolunteerRegistration, PTABoardRegistration, TaskRegistration
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
-from saas.models import Parent, School, Judge, Admin, Volunteer, PTABoard
+from saas.models import Parent, School, Judge, Admin, Volunteer, PTABoard, Task
 from django.contrib.sessions.models import Session
 
 
@@ -355,3 +356,77 @@ def school(request):
     except:
         pass
     return render(request, "school.html", context)
+
+
+def tasks(request):
+    context = {}
+    tasks = None
+    last_modification = ''
+    counter = 0
+    task_id = None
+    try:
+        chair = Admin.objects.get(user=request.user)
+        school = School.objects.get(id=chair.school.all()[0].id)
+        try:
+            tasks = Task.objects.filter(school=school).order_by('-created')
+            last_modification = tasks.order_by('updated')[0].updated
+            counter = tasks.count()
+        except:
+            pass
+        context = {
+            "first_name": chair.first_name,
+            "last_name": chair.last_name,
+            'tasks': tasks,
+            'school': school,
+            'last_modification': last_modification,
+            'counter': counter,
+        }
+        if request.method == 'POST' and request.POST['tasks']:
+            form = TaskRegistration(request.POST)
+            if form.is_valid():
+                task_category = form.cleaned_data['task_category']
+                task_description = form.cleaned_data['task_description']
+                task_exp_start_date = form.cleaned_data['task_exp_start_date']
+                task_exp_end_date = form.cleaned_data['task_exp_end_date']
+                task_actual_start_date = form.cleaned_data['task_actual_start_date']
+                task_actual_end_date = form.cleaned_data['task_actual_end_date']
+                status = form.cleaned_data['status']
+                comments = form.cleaned_data['comments']
+
+                try:#if edit
+                    task_id = request.POST['task_id']
+                except:
+                    pass
+                if not task_id:
+                    # task, created = Task.objects.get_or_create(defaults={
+                    #     'task_description': task_description,
+                    #     'task_category': task_category,
+                    #     'task_exp_start_date': task_exp_start_date,
+                    #     'task_exp_end_date': task_exp_end_date,
+                    #     'task_actual_start_date': task_actual_start_date,
+                    #     'task_actual_end_date': task_actual_end_date,
+                    #     'status': status,
+                    #     'comments': comments,
+                    # })
+                    task = Task(task_description=task_description, task_category=task_category, task_exp_start_date=task_exp_start_date,
+                                                                task_exp_end_date=task_exp_end_date,
+                                                           task_actual_start_date=task_actual_start_date,
+                                                           task_actual_end_date=task_actual_end_date,
+                                                           status=status,
+                                                           comments=comments,
+                                                           )
+                    task.school.add(school)
+                    task.save()
+                else:
+                    Task.objects.filter(id=task_id).update(task_description=task_description, task_category=task_category, task_exp_start_date=task_exp_start_date,
+                                                                task_exp_end_date=task_exp_end_date,
+                                                           task_actual_start_date=task_actual_start_date,
+                                                           task_actual_end_date=task_actual_end_date,
+                                                           status=status,
+                                                           comments=comments,
+                                                           )
+
+                return redirect('/tasks')
+    except:
+        pass
+    return render(request, "tasks.html", context)

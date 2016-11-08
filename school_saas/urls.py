@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^admin', admin.site.urls),
     url(r'^$', views.home, name='home'),
     url(r'^main_login', views.main_login, name='main_login'),
+    url(r'^main_logout', views.main_logout, name='main_logout'),
     url(r'^forgot_password', views.forgot_password, name='forgot_password'),
     url(r'^register', views.register, name='register'),
     url(r'^intermid', views.intermid, name='intermid'),
@@ -33,5 +34,6 @@ urlpatterns = [
     url(r'^volunteers', views.volunteers, name='volunteers'),
     url(r'^pta_board', views.pta_board, name='pta_board'),
     url(r'^school', views.school, name='school'),
-    url(r'^main_logout', views.main_logout, name='main_logout'),
+    url(r'^tasks', views.tasks, name='tasks'),
+
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
