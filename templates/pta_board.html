@@ -16,8 +16,8 @@
                     <div class="clients-list">
                     <ul class="nav nav-tabs">
                         <span class="pull-right small text-muted">{{ counter }}</span>
-                        <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> PTA board list</a></li>
-                        <li class=""><a data-toggle="tab" href="#tab-2"><i class="fa fa-user-plus"></i> Add new</a></li>
+                        <li id="tab_1" class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> PTA board list</a></li>
+                        <li id="tab_2" class=""><a data-toggle="tab" href="#tab-2"><i class="fa fa-user-plus"></i> Add new</a></li>
                     </ul>
                     <div class="tab-content">
                         <div id="tab-1" class="tab-pane active">
@@ -127,7 +127,7 @@
                                     </div>
 
                                     <div class="col-lg-8">
-                                        <a data-toggle="tab" href="#tab-2"><button onclick="FillForm('{{ volunteer.first_name }}', '{{ volunteer.last_name }}', '{{ volunteer.email }}', '{{ volunteer.phone }}', '{{ volunteer.role }}')" type="button" class="btn btn-primary btn-sm btn-block">
+                                        <a data-toggle="tab" href="#tab-2"><button onclick="FillForm('{{ volunteer.first_name }}', '{{ volunteer.last_name }}', '{{ volunteer.email }}', '{{ volunteer.phone }}', '{{ volunteer.role }}'); $('#tab_2').attr('class', 'active');$('#tab_1').attr('class', '');" type="button" class="btn btn-primary btn-sm btn-block">
                                             <i class="fa fa-edit"></i>   Edit info
                                         </button></a>
 

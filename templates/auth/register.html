@@ -26,7 +26,14 @@
 
             </div>
             <h3>Register to SchoolSaas</h3>
-            <p>Create account to see it in action.</p>
+
+
+            {% if not er1 %}
+                <p>Create account to see it in action.</p>
+            {% else %}
+                <p style="color:red;">User with this email already exist</p>
+            {% endif %}
+
             <form method="post" class="m-t" role="form" action="">
                 {% csrf_token %}
                 <!--<div class="form-group">-->

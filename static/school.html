@@ -22,8 +22,8 @@
                     <ul class="nav nav-tabs">
                         <span class="pull-right small text-muted">{{ counter }}</span>
                         <li id="tab_1" class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-institution"></i> School info</a></li>
-                        <li class=""><a onclick="FillForm('{{ school.name }}', '{{ school.address_1 }}', '{{ school.address_1 }}', '{{ school.city }}', '{{ school.state }}', '{{ school.zipcode }}', '{{ school.pta_paid }}', '{{ school.pta_paid_date }}')" data-toggle="tab" href="#tab-2"><i class="fa fa-info-circle"></i> Change info</a></li>
-                        <li class=""><a data-toggle="tab" href="#tab-3"><i class="fa fa-image"></i> Upload image</a></li>
+                        <li id="tab_2" class=""><a onclick="FillForm('{{ school.name }}', '{{ school.address_1 }}', '{{ school.address_1 }}', '{{ school.city }}', '{{ school.state }}', '{{ school.zipcode }}', '{{ school.pta_paid }}', '{{ school.pta_paid_date }}')" data-toggle="tab" href="#tab-2"><i class="fa fa-info-circle"></i> Change info</a></li>
+                        <li id="tab_3" class=""><a data-toggle="tab" href="#tab-3"><i class="fa fa-image"></i> Upload image</a></li>
                     </ul>
                     <div class="tab-content">
                         <div  style="margin-top:35px; height: 500px;" id="tab-1" class="tab-pane active">
@@ -93,11 +93,11 @@
                                 <div>
                                     <div class="btn-group">
 
-                                        <a class="" onclick="$this.attr('class', 'active');" id="tab_2" data-toggle="tab" href="#tab-2">
-                                            <button onclick="FillForm('{{ school.name }}', '{{ school.address_1 }}', '{{ school.address_1 }}', '{{ school.city }}', '{{ school.state }}', '{{ school.zipcode }}', '{{ school.pta_paid }}', '{{ school.pta_paid_date }}')" class="btn btn-primary btn-sm"><i class="fa fa-info-circle"></i> Change info</button>
+                                        <a class="" data-toggle="tab" href="#tab-2">
+                                            <button onclick="FillForm('{{ school.name }}', '{{ school.address_1 }}', '{{ school.address_1 }}', '{{ school.city }}', '{{ school.state }}', '{{ school.zipcode }}', '{{ school.pta_paid }}', '{{ school.pta_paid_date }}'); $('#tab_2').attr('class', 'active'); $('#tab_1').attr('class', '');" class="btn btn-primary btn-sm"><i class="fa fa-info-circle"></i> Change info</button>
                                         </a>
 
-                                        <a class="" onclick="$this.attr('class', 'active');" id="tab_3" data-toggle="tab" href="#tab-3">
+                                        <a class="" onclick="$('#tab_3').attr('class', 'active');$('#tab_1').attr('class', '');" data-toggle="tab" href="#tab-3">
                                             <button class="btn btn-success btn-sm"><i class="fa fa-image"></i> Upload image</button>
                                         </a>
                                     </div>

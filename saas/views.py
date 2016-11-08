@@ -5,9 +5,12 @@ from saas.forms import FirstStepRegistration, ParentRegistration, SchoolRegistra
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from saas.models import Parent, School, Judge, Admin, Volunteer, PTABoard
+from django.contrib.sessions.models import Session
+
 
 def home(request):
     context = {}
+
     # if request.method == 'POST' and request.POST['post']:
     #     email = request.POST['email']
     #     password = request.POST['password']
@@ -24,8 +27,16 @@ def home(request):
     #         context = {'er1': 'yes'}
     return render(request, "landing.html", context)
 
+def main_logout(request):
+    request.session.flush()
+    Session.objects.all().delete()
+    for key in list(request.session.keys()):
+        del request.session[key]
+    return redirect('/main_login')
 
 def main_login(request):
+    # if request.user.is_authenticated():
+    #     return redirect("/main")
     context = {}
     if request.method == 'POST' and request.POST['post']:
         email = request.POST['email']
@@ -48,21 +59,22 @@ def register(request):
     if request.method == 'POST' and request.POST['post']:
         form = FirstStepRegistration(request.POST)
         if form.is_valid():
+            try:
             # role = request.POST['role']
-            password = form.cleaned_data['password']
-            email = form.cleaned_data['email']
-            user, created = User.objects.get_or_create(username=email, password=password)
-            user.backend = 'django.contrib.auth.backends.ModelBackend'
-            user.save()
-            auth = authenticate(username=user.username, password=user.password)
-            if not created:
-                login(request, auth)
-                return redirect("/main")
+                password = form.cleaned_data['password']
+                email = form.cleaned_data['email']
+                user, created = User.objects.get_or_create(username=email, password=password)
+                user.backend = 'django.contrib.auth.backends.ModelBackend'
+                user.save()
+                auth = authenticate(username=user.username, password=user.password)
+                if not created:
+                    login(request, auth)
+                    return redirect("/main")
 
-            login(request, user)
-            # path = "%s_register" % role
-
-            return redirect("/intermid")
+                login(request, user)
+                return redirect("/intermid")
+            except:
+                context = {'er1': 'yes'}
     return render(request, "auth/register.html", context)
 
 def forgot_password(request):
@@ -188,7 +200,7 @@ def main(request):
             return render(request, "auth/chair.html", context)
     except:
         pass
-
+    return redirect("/intermid")
 
 @login_required
 def volunteers(request):
