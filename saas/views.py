@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from saas.models import Parent, School, Judge, Admin, Volunteer, PTABoard, Task
 from django.contrib.sessions.models import Session
 
+from saas.models import NEW, IN_PROGRESS, DONE
+
 
 def home(request):
     context = {}
@@ -364,6 +366,7 @@ def tasks(request):
     last_modification = ''
     counter = 0
     task_id = None
+    asignee_id = None
     try:
         chair = Admin.objects.get(user=request.user)
         school = School.objects.get(id=chair.school.all()[0].id)
@@ -380,10 +383,12 @@ def tasks(request):
             'school': school,
             'last_modification': last_modification,
             'counter': counter,
+            'asignees': Volunteer.objects.filter(school=school),
         }
         if request.method == 'POST' and request.POST['tasks']:
             form = TaskRegistration(request.POST)
             if form.is_valid():
+
                 task_category = form.cleaned_data['task_category']
                 task_description = form.cleaned_data['task_description']
                 task_exp_start_date = form.cleaned_data['task_exp_start_date']
@@ -391,23 +396,27 @@ def tasks(request):
                 task_actual_start_date = form.cleaned_data['task_actual_start_date']
                 task_actual_end_date = form.cleaned_data['task_actual_end_date']
                 status = form.cleaned_data['status']
+
+                # if status == '1':
+                #     status = NEW
+                # if status == '2':
+                #     status = IN_PROGRESS
+                # if status == '3':
+                #     status = DONE
+                # TASK_STATUS = [NEW, IN_PROGRESS, DONE]
+                # status = TASK_STATUS[int(status)]
                 comments = form.cleaned_data['comments']
+                # asignee = form.cleaned_data['asignee']
 
                 try:#if edit
                     task_id = request.POST['task_id']
                 except:
                     pass
+                try:
+                    asignee_id = request.POST['asignee_id']
+                except:
+                    pass
                 if not task_id:
-                    # task, created = Task.objects.get_or_create(defaults={
-                    #     'task_description': task_description,
-                    #     'task_category': task_category,
-                    #     'task_exp_start_date': task_exp_start_date,
-                    #     'task_exp_end_date': task_exp_end_date,
-                    #     'task_actual_start_date': task_actual_start_date,
-                    #     'task_actual_end_date': task_actual_end_date,
-                    #     'status': status,
-                    #     'comments': comments,
-                    # })
                     task = Task(task_description=task_description, task_category=task_category, task_exp_start_date=task_exp_start_date,
                                                                 task_exp_end_date=task_exp_end_date,
                                                            task_actual_start_date=task_actual_start_date,
@@ -415,16 +424,27 @@ def tasks(request):
                                                            status=status,
                                                            comments=comments,
                                                            )
-                    task.school.add(school)
                     task.save()
+                    try:
+                        task.asignee.add(Volunteer.objects.filter(id=int(asignee_id)))
+                    except:
+                        pass
+                    task.school.add(school)
+                    # task.save()
                 else:
-                    Task.objects.filter(id=task_id).update(task_description=task_description, task_category=task_category, task_exp_start_date=task_exp_start_date,
+                    task = Task.objects.filter(id=task_id)
+                    try:
+                        task.asignee.add(Volunteer.objects.filter(id=int(asignee_id)))
+                    except:
+                        pass
+                    task.update(task_description=task_description, task_category=task_category, task_exp_start_date=task_exp_start_date,
                                                                 task_exp_end_date=task_exp_end_date,
                                                            task_actual_start_date=task_actual_start_date,
                                                            task_actual_end_date=task_actual_end_date,
                                                            status=status,
                                                            comments=comments,
                                                            )
+                    # task.save()
 
                 return redirect('/tasks')
     except:

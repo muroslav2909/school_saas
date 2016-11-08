@@ -56,7 +56,7 @@ class Volunteer(models.Model):
 
 class Task(models.Model):
     school = models.ManyToManyField(School)
-    task_category = models.CharField(max_length=50, null=True, blank=True)
+    task_category = models.CharField(max_length=500, null=True, blank=True)
     task_description = models.TextField(max_length=5000, null=True, blank=True)
     task_exp_start_date = models.DateTimeField(null=True, blank=True)
     task_exp_end_date = models.DateTimeField(null=True, blank=True)

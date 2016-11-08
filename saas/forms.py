@@ -71,5 +71,7 @@ class TaskRegistration(forms.Form):
     task_actual_end_date = forms.DateField(required=False)
     status = forms.CharField(required=False)
     comments = forms.CharField(required=False)
+    asignee = forms.CharField(required=False)
+
 
 

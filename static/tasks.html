@@ -1,8 +1,12 @@
 {% extends 'auth/chair.html' %}
 
+
+{% block link %}
+    <link href="css/plugins/slick/slick.css" rel="stylesheet">
+    <link href="css/plugins/slick/slick-theme.css" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-
-
 <div class="wrapper wrapper-content  animated fadeInRight">
     <div class="row">
         <div id="main_div" class="col-sm-15">
@@ -29,12 +33,10 @@
                                         {% for task in tasks %}
                                         <tr onclick="$('#main_div').attr('class', 'col-sm-8'); $('#block_info').show();">
                                             <td class="client-avatar"><img alt="image" src="img/Green-Pencil-Checklist.jpg"> </td>
-                                            <td><a data-toggle="tab" href="#contact-{{ volunteer.id }}" class="client-link">{{ task.id }}</a></td>
-                                            <td><a data-toggle="tab" href="#contact-{{ volunteer.id }}" class="client-link">{{ task.task_category }}</a></td>
-                                            <td class="contact-type"><i class="fa fa-envelope"> </i></td>
-                                            <td><a data-toggle="tab" href="#contact-{{ volunteer.id }}" class="client-link"> {{ task.asignee.first_name }} {{ task.asignee.last_name }}</a></td>
-                                            <td class="contact-type"><i class="fa fa-phone"> </i></td>
-                                            <td><a data-toggle="tab" href="#contact-{{ volunteer.id }}" class="client-link"> {{ task.status }}</a></td>
+                                            <td><a data-toggle="tab" href="#contact-{{ task.id }}" class="client-link">{{ task.id }}</a></td>
+                                            <td><a data-toggle="tab" href="#contact-{{ task.id }}" class="client-link">{{ task.task_category }}</a></td>
+                                            <td class="contact-type"><i class="fa fa-cogs"> </i></td>
+                                            <td><a data-toggle="tab" href="#contact-{{ task.id }}" class="client-link"><span class="label label-primary">{{ task.status }}</span></a></td>
                                         </tr>
                                         {% endfor %}
 
@@ -45,58 +47,116 @@
                         </div>
 
 
-                        <div id="tab-2" class="tab-pane">
-                            <div class="full-height-scroll">
+                        <div style="margin-top:35px; height: 1200px;"  id="tab-2" class="tab-pane">
 
-                                    <form style="margin-top:25px;" method="post" action="" class="form-horizontal">
-                                        {% csrf_token %}
+                            <form style="margin-top:25px;" method="post" action="" class="form-horizontal">
+                                {% csrf_token %}
 
-                                        <div class="col-sm-10" style="display:none"><input id="old_email" name="old_email" type="text" class="form-control"></div>
-
-
-                                        <div class="form-group"><label class="col-sm-2 control-label">First Name *</label>
-                                            <div class="col-sm-10"><input id="first_name" name="first_name" pattern=".{3,}" title="Minimum 3 characters required" required="" type="text" placeholder="First Name" class="form-control"></div>
-                                        </div>
-                                        <div class="hr-line-dashed"></div>
+                                <div class="col-sm-10" style="display:none"><input id="task_id" name="task_id" type="text" class="form-control"></div>
+                                <div class="col-sm-10" style="display:none"><input id="asignee_id" name="asignee_id" type="text" class="form-control"></div>
 
 
-                                        <div class="form-group"><label class="col-sm-2 control-label">Last Name *</label>
-                                            <div class="col-sm-10"><input id="last_name" name="last_name"  pattern=".{3,}" title="Minimum 3 characters required" required="" type="text" placeholder="Last Name" class="form-control"></div>
-                                        </div>
-                                        <div class="hr-line-dashed"></div>
+                                <div class="form-group"><label class="col-sm-2 control-label">Task Category *</label>
+                                    <div class="col-sm-10"><input id="task_category" name="task_category" pattern=".{3,}" title="Minimum 3 characters required" required="" type="text" placeholder="Task Category" class="form-control"></div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
 
 
-                                         <div class="form-group"><label class="col-sm-2 control-label">Role *</label>
-                                            <div class="col-sm-10"><input id="role" name="role" pattern=".{3,}" title="Minimum 3 characters required" required="" type="text" placeholder="Role" class="form-control"></div>
-                                        </div>
-                                        <div class="hr-line-dashed"></div>
+                                <div class="form-group"><label class="col-sm-2 control-label">Description *</label>
+                                    <div class="col-sm-10"><textarea style="width:525px;height:150px;" id="task_description" name="task_description"  title="Minimum 10 characters required" required="" placeholder="Description" class="form-control"></textarea></div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
 
 
-                                        <div class="form-group"><label class="col-sm-2 control-label">Email *</label>
-                                            <div class="col-sm-10"><input id="email" required="" name="email" type="email" placeholder="Email" class="form-control"></div>
-                                        </div>
-                                        <div class="hr-line-dashed"></div>
-
-
-                                        <div class="form-group">
-                                            <label class="col-sm-2 control-label">Phone *</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" id="phone" name="phone" required="" class="form-control" data-mask="(999) 999-9999" placeholder="Phone">
+                                <div class="form-group"><label class="col-sm-2 control-label">Exp start date</label>
+                                    <div class="col-sm-10">
+                                        <div class="form-group" id="data_1">
+                                            <label class="font-noraml"></label>
+                                            <div class="input-group date">
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input id="task_exp_start_date" name="task_exp_start_date" type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" title="Date format required: mm/dd/yyyy" class="form-control" placeholder="Exp start date">
                                             </div>
                                         </div>
-                                        <div class="hr-line-dashed"></div>
+                                    </div>
+                                </div>
 
 
-                                        <div class="form-group">
-                                            <div class="col-sm-4 col-sm-offset-2">
-                                                <input type="hidden" name="pta_board" value="yes" />
-                                                <button class="btn btn-primary" type="submit">Save Task</button>
+                                <div class="form-group"><label class="col-sm-2 control-label">Exp end date</label>
+                                    <div class="col-sm-10">
+                                        <div class="form-group" id="data_2">
+                                            <label class="font-noraml"></label>
+                                            <div class="input-group date">
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input id="task_exp_end_date" name="task_exp_end_date" type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" title="Date format required: mm/dd/yyyy" class="form-control" placeholder="Exp end date">
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
 
-                                    </form>
 
-                            </div>
+                                <div class="form-group"><label class="col-sm-2 control-label">Actual start date</label>
+                                    <div class="col-sm-10">
+                                        <div class="form-group" id="data_3">
+                                            <label class="font-noraml"></label>
+                                            <div class="input-group date">
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input id="task_actual_start_date" name="task_actual_start_date" type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" title="Date format required: mm/dd/yyyy" class="form-control" placeholder="Actual start date">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group"><label class="col-sm-2 control-label">Actual end date</label>
+                                    <div class="col-sm-10">
+                                        <div class="form-group" id="data_4">
+                                            <label class="font-noraml"></label>
+                                            <div class="input-group date">
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input id="task_actual_end_date" name="task_actual_end_date" type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" title="Date format required: mm/dd/yyyy" class="form-control" placeholder="Actual end date">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group"><label class="col-sm-2 control-label">Status</label>
+                                     <div class="col-sm-10">
+                                        <select name="status" id='selected' class="select2_demo_3 form-control" required>
+                                            <option value="">Please choose status:</option>
+                                            <option value="new">New</option>
+                                            <option value="in_progress" >In progress</option>
+                                            <option value="done">Done</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+
+
+                                <div class="form-group"><label class="col-sm-2 control-label">Asignee</label>
+                                     <div class="col-sm-10">
+                                        <select name="status" id='asignee' class="select2_demo_3 form-control">
+                                            <option value="">Please choose asignee:</option>
+                                            {% for asignee in asignees %}
+                                                <option value="{{asignee.id}}">{{ asignee.first_name }} {{ asignee.last_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+
+
+                                <div class="form-group"><label class="col-sm-2 control-label">Comments</label>
+                                    <div class="col-sm-10"><input id="comments" name="comments" type="text" placeholder="Comments" class="form-control"></div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+
+
+                                <div class="form-group">
+                                    <div class="col-sm-4 col-sm-offset-2">
+                                        <input type="hidden" name="tasks" value="yes" />
+                                        <button class="btn btn-primary" type="submit">Save Task</button>
+                                    </div>
+                                </div>
+
+                            </form>
+
                         </div>
 
                     </div>
@@ -110,12 +170,16 @@
             <div class="ibox ">
 
                 <div class="ibox-content">
-                    <div class="tab-content">
+                    <div id="printableArea" class="tab-content">
 
 
                         {% for task in tasks %}
-                            <div id="contact-{{ volunteer.id }}" class="tab-pane">
+                            <div id="contact-{{ task.id }}" class="tab-pane">
+
+                                <button onclick="printDiv('printableArea')" type="button" class="btn btn-sm btn-white pull-right"> <i class="fa fa-print"></i> </button>
+                                </br>
                                 <h2>Task #{{ task.id }}</h2>
+
                                 <div class="client-detail">
                                 <div class="full-height-scroll">
                                     <ul class="list-group clear-list">
@@ -170,7 +234,7 @@
                                         {% endif %}
                                     </ul>
                                     <div style="margin-left:-10px;" class="col-lg-8">
-                                            <a data-toggle="tab" href="#tab-2"><button onclick="FillForm('{{ volunteer.first_name }}', '{{ volunteer.last_name }}', '{{ volunteer.email }}', '{{ volunteer.phone }}', '{{ volunteer.role }}'); $('#tab_2').attr('class', 'active');$('#tab_1').attr('class', '');" type="button" class="btn btn-primary btn-sm btn-block">
+                                            <a data-toggle="tab" href="#tab-2"><button onclick="FillForm('{{ task.id }}', '{{ task.asignee.id }}', '{{ task.task_category }}', '{{ task.task_description }}', '{{ task.task_exp_start_date }}', '{{ task.task_exp_end_date }}', '{{ task.task_actual_start_date }}', '{{ task.task_actual_end_date }}', '{{ task.status }}', '{{ task.comments }}', '{{ task.asignee }}'); $('#tab_2').attr('class', 'active');$('#tab_1').attr('class', '');" type="button" class="btn btn-primary btn-sm btn-block">
                                                 <i class="fa fa-edit"></i>   Edit info
                                             </button></a>
                                     </div>
@@ -196,13 +260,18 @@
 
 {% block js %}
 
-<script> function FillForm(first_name, last_name, email, phone, role) {
-    document.getElementById("old_email").value=email;
-    document.getElementById("role").value=role;
-    document.getElementById("first_name").value=first_name;
-    document.getElementById("last_name").value=last_name;
-    document.getElementById("email").value=email;
-    document.getElementById("phone").value=phone;
+<script> function FillForm(task_id, asignee_id, task_category, task_description, task_exp_start_date, task_exp_end_date, task_actual_start_date, task_actual_end_date, status, comments, asignee) {
+    document.getElementById("asignee_id").value=asignee_id;
+    document.getElementById("task_id").value=task_id;
+    document.getElementById("task_category").value=task_category;
+    document.getElementById("task_description").value=task_description;
+    document.getElementById("task_exp_start_date").value=task_exp_start_date;
+    document.getElementById("task_exp_end_date").value=task_exp_end_date;
+    document.getElementById("task_actual_start_date").value=task_actual_start_date;
+    document.getElementById("task_actual_end_date").value=task_actual_end_date;
+    document.getElementById("status").value=status;
+    document.getElementById("comments").value=comments;
+    document.getElementById("asignee").value=asignee;
     }
 </script>
 
@@ -214,7 +283,16 @@
 </script>
 
 
+<script>
+function printDiv(divName) {
+     var printContents = document.getElementById(divName).innerHTML;
+     var originalContents = document.body.innerHTML;
 
+     document.body.innerHTML = printContents;
 
+     window.print();
 
+     document.body.innerHTML = originalContents;
+}
+</script>
 {% endblock %}
