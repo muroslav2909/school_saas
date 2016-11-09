@@ -73,5 +73,11 @@ class TaskRegistration(forms.Form):
     comments = forms.CharField(required=False)
     asignee = forms.CharField(required=False)
 
+class ParentInvite(forms.Form):
+    last_day = forms.CharField()
+    email = forms.EmailField()
 
 
+class JudgeInvite(forms.Form):
+    ranking_factors = forms.CharField()
+    email = forms.EmailField()

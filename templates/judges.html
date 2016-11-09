@@ -1,0 +1,178 @@
+{% extends 'auth/chair.html' %}
+
+
+{% block link %}
+    <link href="css/plugins/slick/slick.css" rel="stylesheet">
+    <link href="css/plugins/slick/slick-theme.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="wrapper wrapper-content  animated fadeInRight">
+    <div class="row">
+        <div id="main_div" class="col-sm-15">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <span class="text-muted small pull-right">Last modification: <i class="fa fa-clock-o"></i> {{ last_modification }}</span>
+                    <h2>Judges</h2>
+                    <p>
+                        You can view details about Judges. Send email with Ranking factors.
+                    </p>
+                    <div class="clients-list">
+                    <ul class="nav nav-tabs">
+                        <span class="pull-right small text-muted">{{ counter }}</span>
+                        <li id="tab_1" class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> Judges list</a></li>
+                        <li id="tab_2" class=""><a data-toggle="tab" href="#tab-2"><i class="fa fa-user-plus"></i> Send email</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane active">
+                            <div class="full-height-scroll">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <tbody>
+
+                                        {% for judge in judges %}
+                                        <tr onclick="$('#main_div').attr('class', 'col-sm-8'); $('#block_info').show();">
+                                            <td class="client-avatar"><img alt="image" src="img/Green-Pencil-Checklist.jpg"> </td>
+                                            <td><a data-toggle="tab" href="#contact-{{ judge.id }}" class="client-link">{{ judge.first_name }} {{ judge.last_name }}</a></td>
+                                            <td class="contact-type"><i class="fa fa-phone"> </i></td>
+                                            <td><a data-toggle="tab" href="#contact-{{ judge.id }}" class="client-link"> {{ judge.phone }}</a></td>
+
+
+                                        </tr>
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div style="margin-top:35px; height: 1200px;"  id="tab-2" class="tab-pane">
+
+                            <form style="margin-top:25px;" method="post" action="" class="form-horizontal">
+                                {% csrf_token %}
+
+
+                                <div class="form-group"><label class="col-sm-2 control-label">Email *</label>
+                                    <div class="col-sm-10"><input id="email" name="email" required="" type="text" placeholder="Email" class="form-control"></div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+
+
+                                <div class="form-group"><label class="col-sm-2 control-label">Ranking factors *</label>
+                                    <div class="col-sm-10"><textarea style="width:525px;height:150px;" id="ranking_factors" name="ranking_factors"  title="Minimum 10 characters required" required="" placeholder="Ranking factors" class="form-control"></textarea></div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+
+
+                                <div class="form-group">
+                                    <div class="col-sm-4 col-sm-offset-2">
+                                        <input type="hidden" name="judges" value="yes" />
+                                        <button class="btn btn-primary" type="submit">Send Ranking factors</button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display:none;" class="col-sm-4" id="block_info">
+            <div class="ibox ">
+
+                <div class="ibox-content">
+                    <div class="tab-content">
+
+
+                        {% for judge in judges %}
+                            <div id="contact-{{ judge.id }}" class="tab-pane">
+
+                                <h2>{{ judge.first_name }} {{ judge.last_name }}</h2>
+                                </br>
+                                    <div class="col-lg-4 text-center">
+                                        <div class="m-b-sm">
+                                            <img alt="image" class="img-circle" src="img/nobody_m.original.jpg"
+                                                 style="width: 62px">
+                                        </div>
+                                    </div>
+
+                                <div class="client-detail">
+                                <div class="full-height-scroll">
+                                    <ul class="list-group clear-list">
+
+
+                                        <li class="list-group-item">
+                                            <strong>Organisation</strong></br>
+                                            <span class="pull-right"> <p class="contact-type"><i class="fa fa-compass"> </i></p></span>
+                                            {{ judge.organisation }}
+                                        </li>
+
+
+                                        <li class="list-group-item">
+                                            <strong>Phone</strong></br>
+                                            <span class="pull-right"> <p class="contact-type"><i class="fa fa-phone"> </i></p></span>
+                                            {{ judge.phone }}
+                                        </li>
+
+
+                                        <li class="list-group-item">
+                                            <strong>Email</strong></br>
+                                            <span class="pull-right"> <p class="contact-type"><i class="fa fa-envelope"> </i></p></span>
+                                            {{ judge.user.username }}
+                                        </li>
+
+                                    </ul>
+                                    </br>
+
+                                    <div style="margin-left:-10px;" class="col-lg-8">
+                                            <a data-toggle="tab" href="#tab-2">
+                                                <button onclick="FillForm('{{ judge.user.username }}'); $('#tab_2').attr('class', 'active');$('#tab_1').attr('class', '');" class="btn btn-primary" type="submit">
+                                                <i class="fa fa-send"></i> Send Ranking factors
+                                            </button></a>
+                                    </div>
+
+                                </div>
+
+
+
+                                </div>
+                            </div>
+
+                        {% endfor %}
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+
+
+<script> function FillForm(email) {
+    document.getElementById("email").value=email;
+    }
+</script>
+
+
+<script>
+        function codeAddress() {
+            $('#judges_active').attr('class', 'active');
+        }
+        window.onload = codeAddress;
+</script>
+
+
+{% endblock %}

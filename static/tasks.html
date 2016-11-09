@@ -231,13 +231,13 @@
                                             </li>
                                         {% endif %}
                                     </ul>
+                                    <div style="margin-left:-10px;" class="col-lg-8">
+                                            <a data-toggle="tab" href="#tab-2"><button onclick="FillForm('{{ task.id }}', '{{ task.asignee.id }}', '{{ task.task_category }}', '{{ task.task_description }}', '{{ task.task_exp_start_date }}', '{{ task.task_exp_end_date }}', '{{ task.task_actual_start_date }}', '{{ task.task_actual_end_date }}', '{{ task.status }}', '{{ task.comments }}', '{{ task.asignee }}'); $('#tab_2').attr('class', 'active');$('#tab_1').attr('class', '');" type="button" class="btn btn-primary btn-sm btn-block">
+                                                <i class="fa fa-edit"></i>   Edit info
+                                            </button></a>
+                                    </div>
+                                </div>
 
-                                </div>
-                                <div style="margin-left:-10px;" class="col-lg-8">
-                                    <a data-toggle="tab" href="#tab-2"><button onclick="FillForm('{{ task.id }}', '{{ task.asignee.id }}', '{{ task.task_category }}', '{{ task.task_description }}', '{{ task.task_exp_start_date }}', '{{ task.task_exp_end_date }}', '{{ task.task_actual_start_date }}', '{{ task.task_actual_end_date }}', '{{ task.status }}', '{{ task.comments }}', '{{ task.asignee }}'); $('#tab_2').attr('class', 'active');$('#tab_1').attr('class', '');" type="button" class="btn btn-primary btn-sm btn-block">
-                                        <i class="fa fa-edit"></i>   Edit info
-                                    </button></a>
-                                </div>
 
 
                                 </div>
@@ -273,7 +273,7 @@
 
 <script>
         function codeAddress() {
-            $('#pta_board_active').attr('class', 'active');
+            $('#tasks_active').attr('class', 'active');
         }
         window.onload = codeAddress;
 </script>

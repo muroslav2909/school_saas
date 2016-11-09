@@ -2,7 +2,9 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from saas.forms import FirstStepRegistration, ParentRegistration, SchoolRegistration, \
-    JudgesRegistration, ChairRegistration, VolunteerRegistration, PTABoardRegistration, TaskRegistration
+    JudgesRegistration, ChairRegistration, VolunteerRegistration, PTABoardRegistration,\
+    TaskRegistration, ParentInvite, JudgeInvite
+
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from saas.models import Parent, School, Judge, Admin, Volunteer, PTABoard, Task
@@ -397,10 +399,8 @@ def tasks(request):
                 status = form.cleaned_data['status']
                 comments = form.cleaned_data['comments']
                 asignee = form.cleaned_data['asignee']
-                print "asignee", asignee, type(int(asignee))
                 try:#if edit
                     task_id = request.POST['task_id']
-                    print "task_id", task_id
                 except:
                     pass
                 if not task_id:
@@ -417,7 +417,6 @@ def tasks(request):
                     except:
                         pass
                     task.school.add(school)
-                    # task.save()
                 else:
                     task = Task.objects.filter(id=int(task_id))
                     task.update(asignee=Volunteer.objects.get(id=int(asignee)), task_description=task_description, task_category=task_category, task_exp_start_date=task_exp_start_date,
@@ -427,9 +426,80 @@ def tasks(request):
                                                            status=status,
                                                            comments=comments,
                                                            )
-                    # task.save()
 
                 return redirect('/tasks')
     except:
         pass
     return render(request, "tasks.html", context)
+
+
+
+
+
+def parents(request):
+    context = {}
+    parents = None
+    last_modification = ''
+    counter = 0
+    try:
+        chair = Admin.objects.get(user=request.user)
+        school = School.objects.get(id=chair.school.all()[0].id)
+        try:
+            parents = Parent.objects.filter(school=school).order_by('-created')
+            last_modification = parents.order_by('updated')[0].updated
+            counter = parents.count()
+        except:
+            pass
+        context = {
+            "first_name": chair.first_name,
+            "last_name": chair.last_name,
+            'parents': parents,
+            'school': school,
+            'last_modification': last_modification,
+            'counter': counter,
+        }
+        if request.method == 'POST' and request.POST['parents']:
+            form = ParentInvite(request.POST)
+            if form.is_valid():
+                last_day = form.cleaned_data['last_day']
+                email = form.cleaned_data['email']
+                print "email, last_day", email, last_day
+                return redirect('/parents')
+    except:
+        pass
+    return render(request, "parents.html", context)
+
+
+
+def judges(request):
+    context = {}
+    judges = None
+    last_modification = ''
+    counter = 0
+    try:
+        chair = Admin.objects.get(user=request.user)
+        school = School.objects.get(id=chair.school.all()[0].id)
+        try:
+            judges = Judge.objects.filter().order_by('-created')
+            last_modification = judges.order_by('updated')[0].updated
+            counter = judges.count()
+        except:
+            pass
+        context = {
+            "first_name": chair.first_name,
+            "last_name": chair.last_name,
+            'judges': judges,
+            'school': school,
+            'last_modification': last_modification,
+            'counter': counter,
+        }
+        if request.method == 'POST' and request.POST['judges']:
+            form = JudgeInvite(request.POST)
+            if form.is_valid():
+                ranking_factors = form.cleaned_data['ranking_factors']
+                email = form.cleaned_data['email']
+                print "email, ranking_factors", email, ranking_factors
+                return redirect('/judges')
+    except:
+        pass
+    return render(request, "judges.html", context)
