@@ -53,8 +53,6 @@
                                 {% csrf_token %}
 
                                 <div class="col-sm-10" style="display:none"><input id="task_id" name="task_id" type="text" class="form-control"></div>
-                                <div class="col-sm-10" style="display:none"><input id="asignee_id" name="asignee_id" type="text" class="form-control"></div>
-
 
                                 <div class="form-group"><label class="col-sm-2 control-label">Task Category *</label>
                                     <div class="col-sm-10"><input id="task_category" name="task_category" pattern=".{3,}" title="Minimum 3 characters required" required="" type="text" placeholder="Task Category" class="form-control"></div>
@@ -131,7 +129,7 @@
 
                                 <div class="form-group"><label class="col-sm-2 control-label">Asignee</label>
                                      <div class="col-sm-10">
-                                        <select name="status" id='asignee' class="select2_demo_3 form-control">
+                                        <select name="asignee" id='asignee' class="select2_demo_3 form-control">
                                             <option value="">Please choose asignee:</option>
                                             {% for asignee in asignees %}
                                                 <option value="{{asignee.id}}">{{ asignee.first_name }} {{ asignee.last_name }}</option>
@@ -170,13 +168,13 @@
             <div class="ibox ">
 
                 <div class="ibox-content">
-                    <div id="printableArea" class="tab-content">
+                    <div class="tab-content">
 
 
                         {% for task in tasks %}
                             <div id="contact-{{ task.id }}" class="tab-pane">
 
-                                <button onclick="printDiv('printableArea')" type="button" class="btn btn-sm btn-white pull-right"> <i class="fa fa-print"></i> </button>
+                                <button onclick="printDiv('contact-{{ task.id }}')" type="button" class="btn btn-sm btn-white pull-right"> <i class="fa fa-print"></i> </button>
                                 </br>
                                 <h2>Task #{{ task.id }}</h2>
 
@@ -260,15 +258,14 @@
 
 {% block js %}
 <script> function FillForm(task_id, asignee_id, task_category, task_description, task_exp_start_date, task_exp_end_date, task_actual_start_date, task_actual_end_date, status, comments, asignee) {
-    document.getElementById("asignee_id").value=asignee_id;
     document.getElementById("task_id").value=task_id;
     document.getElementById("task_category").value=task_category;
     document.getElementById("task_description").value=task_description;
-    document.getElementById("task_exp_start_date").value=task_exp_start_date;
-    document.getElementById("task_exp_end_date").value=task_exp_end_date;
-    document.getElementById("task_actual_start_date").value=task_actual_start_date;
-    document.getElementById("task_actual_end_date").value=task_actual_end_date;
-    document.getElementById("status").value=status;
+    if(task_exp_start_date!='None'){document.getElementById("task_exp_start_date").value=task_exp_start_date;}
+    if(task_exp_end_date!='None'){document.getElementById("task_exp_end_date").value=task_exp_end_date;}
+    if(task_actual_start_date!='None'){document.getElementById("task_actual_start_date").value=task_actual_start_date;}
+    if(task_actual_end_date!='None'){document.getElementById("task_actual_end_date").value=task_actual_end_date;}
+    document.getElementById("selected").value=status;
     document.getElementById("comments").value=comments;
     document.getElementById("asignee").value=asignee;
     }

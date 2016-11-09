@@ -35,5 +35,6 @@ urlpatterns = [
     url(r'^pta_board', views.pta_board, name='pta_board'),
     url(r'^school', views.school, name='school'),
     url(r'^tasks', views.tasks, name='tasks'),
+    url(r'^parents', views.tasks, name='tasks'),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

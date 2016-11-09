@@ -366,7 +366,6 @@ def tasks(request):
     last_modification = ''
     counter = 0
     task_id = None
-    asignee_id = None
     try:
         chair = Admin.objects.get(user=request.user)
         school = School.objects.get(id=chair.school.all()[0].id)
@@ -396,24 +395,12 @@ def tasks(request):
                 task_actual_start_date = form.cleaned_data['task_actual_start_date']
                 task_actual_end_date = form.cleaned_data['task_actual_end_date']
                 status = form.cleaned_data['status']
-
-                # if status == '1':
-                #     status = NEW
-                # if status == '2':
-                #     status = IN_PROGRESS
-                # if status == '3':
-                #     status = DONE
-                # TASK_STATUS = [NEW, IN_PROGRESS, DONE]
-                # status = TASK_STATUS[int(status)]
                 comments = form.cleaned_data['comments']
-                # asignee = form.cleaned_data['asignee']
-
+                asignee = form.cleaned_data['asignee']
+                print "asignee", asignee, type(int(asignee))
                 try:#if edit
                     task_id = request.POST['task_id']
-                except:
-                    pass
-                try:
-                    asignee_id = request.POST['asignee_id']
+                    print "task_id", task_id
                 except:
                     pass
                 if not task_id:
@@ -426,18 +413,14 @@ def tasks(request):
                                                            )
                     task.save()
                     try:
-                        task.asignee.add(Volunteer.objects.filter(id=int(asignee_id)))
+                        task.asignee.add(Volunteer.objects.filter(id=int(asignee)))
                     except:
                         pass
                     task.school.add(school)
                     # task.save()
                 else:
-                    task = Task.objects.filter(id=task_id)
-                    try:
-                        task.asignee.add(Volunteer.objects.filter(id=int(asignee_id)))
-                    except:
-                        pass
-                    task.update(task_description=task_description, task_category=task_category, task_exp_start_date=task_exp_start_date,
+                    task = Task.objects.filter(id=int(task_id))
+                    task.update(asignee=Volunteer.objects.get(id=int(asignee)), task_description=task_description, task_category=task_category, task_exp_start_date=task_exp_start_date,
                                                                 task_exp_end_date=task_exp_end_date,
                                                            task_actual_start_date=task_actual_start_date,
                                                            task_actual_end_date=task_actual_end_date,
