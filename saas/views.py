@@ -343,6 +343,7 @@ def school(request):
             # 'counter': counter,
         }
         if request.method == 'POST' and request.POST['school']:
+            print "schoolschoolschoolschoolschoolschoolschoolschoolschoolschoolschoolschoolschoolschoolschoolschoolschool"
             form = SchoolRegistration(request.POST)
             if form.is_valid():
                 address_1 = form.cleaned_data['address_1']
@@ -357,8 +358,32 @@ def school(request):
                 School.objects.filter(id=school.id).update(name=name, pta_paid=pta_paid, pta_paid_date=pta_paid_date,
                                                            state=state, city=city, address_1=address_1, address_2=address_2, zipcode=zipcode )
                 return redirect('/school')
+
     except:
+        print "exceptexceptexceptexceptexceptexceptexceptexceptexceptexceptexceptexceptexcept"
         pass
+    try:
+        if request.method == 'POST' and request.POST['img']:
+            pass
+            # print "imgimgimgimgimgimgimgimgimgimgimgimgimgimgimgimgimg", request.POST['img_url']
+            # fh = open("/home/myroslav/virtual_env_project/school_saas/school_saas/saas/static/img/school_images/imageToSave.png", "wb")
+            # fh.write(request.POST['img_url'].decode('base64'))
+            # fh.close()
+            # import base64
+            # with open("/home/myroslav/virtual_env_project/school_saas/school_saas/saas/static/img/school_images/imageToSave.png", "wb") as fh:
+            #     fh.write(base64.decodestring(request.POST['img_url']))
+
+            # from PIL import Image
+            # from base64 import decodestring
+            # print "OKKKKKKK"
+            # # print request.POST['img_url']
+            # data = b''.join(request.POST['img_url'])
+            # url = "/home/myroslav/virtual_env_project/school_saas/school_saas/saas/static/img/school_images/foo.png"
+            # image = Image.frombytes('RGB', (343, 418), decodestring(data), 'raw', 'RGBX')
+            #     #Image.frombytes('RGB', (343, 418), )
+            # image.save(url)
+    except Exception as e:
+        print e
     return render(request, "school.html", context)
 
 
