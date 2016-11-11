@@ -362,6 +362,7 @@ def school(request):
         pass
     try:
         if request.method == 'POST' and request.POST['img']:
+            request.POST['img_url']
             path = "saas/static/img/school_images/%s.jpg" % 'logo'
             from PIL import Image
             import urllib
