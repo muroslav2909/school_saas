@@ -357,8 +357,8 @@
                 aspectRatio: 1.618,
                 preview: ".img-preview",
                 done: function(data) {
-                    document.getElementById("img_url").value=$image.cropper("getDataURL").replace(/^data:image\/(png|jpg);base64,/, "");
-                    // Output the result data for cropping image.
+                    document.getElementById("img_url").value=($image.cropper("getDataURL")).replace(/^data:image\/(png|jpg);base64,/, "");
+
                 }
             });
 

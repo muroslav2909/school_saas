@@ -20,3 +20,10 @@ img = Image.open("/home/myroslav/virtual_env_project/school_saas/school_saas/sta
 raw = img.tobytes()
 img2 = Image.frombytes(img.mode, img.size, raw)
 img2.save('/home/myroslav/virtual_env_project/school_saas/school_saas/static/img/school_images/11111.jpg')
+
+
+base64.b64decode(raw)
+
+base64.standard_b64decode(raw)
+
+base64.b64encode(raw)
