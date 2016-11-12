@@ -23,20 +23,21 @@ def send_test_letter():
 
 
 
-def send_letter(template, subject, category, to):
+def send_letter(template, subject, category, to, context):
     email_html = unicode((template).encode('ascii', 'xmlcharrefreplace'))
     subject = unicode(subject)
-    context = Context({})
+
     html = (Template(email_html)).render(context)
 
     sg = sendgrid.SendGridAPIClient(apikey=MY_OWN_SENDGRID_API_KEY)
     data = {
         "categories": [category, ],
         "content": [{"type": "text/html", "value": html}],
-        "from": {"email": unicode('schoolsaas@saas.com')},
+        "from": {"email": unicode('SchoolSaas@saas.com'), "name": "School Saas"},
         "personalizations": [{"subject": subject, "to": [{"email": unicode(to)}]}],
         "tracking_settings": {"click_tracking": {"enable": True, "enable_text": True},
                               "open_tracking": {"enable": True, "substitution_tag": "%opentrack"},}
     }
     response = sg.client.mail.send.post(request_body=data)
+    print response.status_code
     return response

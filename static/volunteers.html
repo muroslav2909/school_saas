@@ -123,9 +123,15 @@
                                             <i class="fa fa-edit"></i>   Edit info
                                         </button></a>
                                          </br>
-                                        <button type="button" class="btn btn-primary btn-sm btn-block"><i
-                                                class="fa fa-envelope"></i> Send Invitation
-                                        </button>
+                                        <form class="m-t" role="form" method="post" action="" >
+                                            {% csrf_token %}
+
+                                            <input type="hidden" name="invite" value="{{ volunteer.id }}" />
+                                            <button type="submit" class="btn btn-primary btn-sm btn-block"><i
+                                                    class="fa fa-envelope"></i> Send Invitation
+                                            </button>
+
+                                        </form>
                                     </div>
                                 </div>
 

@@ -84,3 +84,6 @@ class JudgeInvite(forms.Form):
 
 class ImgValidation(forms.Form):
     img_url = forms.CharField(required=True)
+
+class ForgotPass(forms.Form):
+    email = forms.EmailField()

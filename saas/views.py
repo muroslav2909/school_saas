@@ -3,19 +3,22 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from saas.forms import FirstStepRegistration, ParentRegistration, SchoolRegistration, \
     JudgesRegistration, ChairRegistration, VolunteerRegistration, PTABoardRegistration,\
-    TaskRegistration, ParentInvite, JudgeInvite, ImgValidation
-
+    TaskRegistration, ParentInvite, JudgeInvite, ImgValidation, ForgotPass
+from django.template import Context, Template
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from saas.models import Parent, School, Judge, Admin, Volunteer, PTABoard, Task, Image_Logo
 from django.contrib.sessions.models import Session
 from datetime import datetime, date, time
-
+from django.utils.crypto import get_random_string
 
 
 from saas.models import NEW, IN_PROGRESS, DONE
 
 # from school_saas.settings import MEDIA_URL
+from saas.notification_manager import send_letter
+
+from school_saas.settings import BASE_DIR
 
 
 def home(request):
@@ -48,20 +51,23 @@ def main_login(request):
     # if request.user.is_authenticated():
     #     return redirect("/main")
     context = {}
-    if request.method == 'POST' and request.POST['post']:
-        email = request.POST['email']
-        password = request.POST['password']
-        user, created = User.objects.get_or_create(username=email, password=password)
-        if not created:
-            print "not created"
-            logout(request)
-            user.backend = 'django.contrib.auth.backends.ModelBackend'
-            user.save()
-            auth = authenticate(username=email, password=password)
-            login(request, user)
-            return redirect("/main")
-        else:
-            context = {'er1': 'yes'}
+    try:
+        if request.method == 'POST' and request.POST['post']:
+            email = request.POST['email']
+            password = request.POST['password']
+            user, created = User.objects.get_or_create(username=email, password=password)
+            if not created:
+                print "not created"
+                logout(request)
+                user.backend = 'django.contrib.auth.backends.ModelBackend'
+                user.save()
+                auth = authenticate(username=email, password=password)
+                login(request, user)
+                return redirect("/main")
+            else:
+                context = {'er1': 'yes'}
+    except:
+        context = {'er1': 'yes'}
     return render(request, "auth/login.html", context)
 
 def register(request):
@@ -89,6 +95,24 @@ def register(request):
 
 def forgot_password(request):
     context = {}
+    if request.method == 'POST' and request.POST['pass']:
+        form = ForgotPass(request.POST)
+        try:
+            if form.is_valid():
+
+                pass_gen = get_random_string(length=8)
+                email = form.cleaned_data['email']
+                context = Context({'pass_gen': pass_gen})
+                path = BASE_DIR + '/templates/email/forgot_pass.html'
+                send_letter(open(path, 'r').read(), "Your password was reseted", 'forgot_password', email, context)
+                user, created = User.objects.get_or_create(username=email)
+                if not created:
+                    user.password = pass_gen
+                    user.save()
+                return redirect('/main_login')
+
+        except Exception as e:
+            print e
     return render(request, "auth/forgot_password.html", context)
 
 @login_required
@@ -262,6 +286,17 @@ def volunteers(request):
                 return redirect('/volunteers')
     except:
         pass
+
+    try:
+        if request.method == 'POST' and request.POST['invite']:
+            v = Volunteer.objects.get(id=int(request.POST['invite']))
+            email = v.email
+            context = Context({})
+            path = BASE_DIR + '/templates/email/invite_vol.html'
+            send_letter(open(path, 'r').read(), "Invitation from School Chair.", 'invite_vol', email, context)
+            return redirect('/volunteers')
+    except:
+        pass
     return render(request, "volunteers.html", context)
 
 
@@ -373,7 +408,6 @@ def school(request):
             if 'img' in request.POST:
                 form = ImgValidation(request.POST)
                 if form.is_valid():
-                    print "request.method == 'POST' and request.POST['img']"
                     path = "media/logo_%d_%s.jpg" % (school.id, datetime.now().strftime("%d_%m_%y_%H_%M"))
                     image = Image_Logo(path=path, school=school).save()
                     context['images'] = Image_Logo.objects.filter(school=school).order_by('-created')[:3]
@@ -492,7 +526,11 @@ def parents(request):
             if form.is_valid():
                 last_day = form.cleaned_data['last_day']
                 email = form.cleaned_data['email']
-                print "email, last_day", email, last_day
+
+                context = Context({'last_day': last_day})
+                path = BASE_DIR + '/templates/email/send_link.html'
+                send_letter(open(path, 'r').read(), "Link from School Chair.", 'send_link', email, context)
+
                 return redirect('/parents')
     except:
         pass
