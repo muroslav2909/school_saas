@@ -25,26 +25,32 @@
                         <li id="tab_2" class=""><a onclick="FillForm('{{ school.name }}', '{{ school.address_1 }}', '{{ school.address_1 }}', '{{ school.city }}', '{{ school.state }}', '{{ school.zipcode }}', '{{ school.pta_paid }}', '{{ school.pta_paid_date }}')" data-toggle="tab" href="#tab-2"><i class="fa fa-info-circle"></i> Change info</a></li>
                         <li id="tab_3" class=""><a data-toggle="tab" href="#tab-3"><i class="fa fa-image"></i> Upload image</a></li>
                     </ul>
+
                     <div class="tab-content">
                         <div  style="margin-top:35px; height: 500px;" id="tab-1" class="tab-pane active">
 
                             <div class="col-md-5">
                                 <div class="product-images">
-                                    <div>
-                                        <img src="img/Exeter_High_School_New_Hampshire.jpg" alt="Smiley face" height="418" width="343">
-                                    </div>
-                                    <div>
+                                    {% for img in images %}
+                                        {% if img.path %}
+                                        <div>
+                                            <img src="{{ img.path }}" alt="schol logo" height="418" width="343">
+                                        </div>
+                                        {% else %}
+                                            <div>
                                         <div class="image-imitation">
-                                            [IMAGE 2]
+                                            [IMAGE]
                                         </div>
                                     </div>
-                                    <div>
-                                        <div class="image-imitation">
-                                            [IMAGE 3]
-                                        </div>
-                                    </div>
+                                        {% endif %}
+                                    {% endfor %}
+
                                 </div>
                             </div>
+
+
+
+
 
                             <div class="col-md-7">
 
@@ -221,7 +227,7 @@
 
                                     <div style="margin-left:1px; margin-top:-2px" class="form-group">
                                         <input type="hidden" name="img" value="yes" />
-                                        <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Save changes as ...</button>
+                                        <button disabled class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Save changes as ...</button>
                                     </div>
 
 

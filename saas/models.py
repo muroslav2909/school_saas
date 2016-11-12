@@ -13,6 +13,7 @@ TASK_STATUS = (
     (DONE, 'DONE'),
 )
 
+
 class School(models.Model):
     name = models.CharField(max_length=50, null=True, blank=True)
     address_1 = models.CharField(max_length=100, null=True, blank=True)
@@ -27,6 +28,14 @@ class School(models.Model):
 
     def __unicode__(self):
         return unicode(self.name)
+
+
+
+class Image_Logo(models.Model):
+    path = models.CharField(max_length=100, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    school = models.ForeignKey(School, null=True, blank=True)
 
 class PTABoard(models.Model):
     role = models.CharField(max_length=50, null=True, blank=True)
@@ -82,6 +91,7 @@ class Expenses(models.Model):
 class Admin(models.Model):
     user = models.ForeignKey(User)
     school = models.ManyToManyField(School)
+    image = models.ForeignKey(Image_Logo, null=True, blank=True)
     first_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)
     phone = models.CharField(max_length=50, null=True, blank=True)
@@ -151,3 +161,5 @@ class Result(models.Model):
     score_basis_3 = models.PositiveIntegerField(max_length=20, null=True, blank=True)
     score_basis_4 = models.PositiveIntegerField(max_length=20, null=True, blank=True)
     total_score = models.PositiveIntegerField(max_length=20, null=True, blank=True)
+
+

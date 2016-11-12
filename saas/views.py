@@ -7,10 +7,15 @@ from saas.forms import FirstStepRegistration, ParentRegistration, SchoolRegistra
 
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
-from saas.models import Parent, School, Judge, Admin, Volunteer, PTABoard, Task
+from saas.models import Parent, School, Judge, Admin, Volunteer, PTABoard, Task, Image_Logo
 from django.contrib.sessions.models import Session
+from datetime import datetime, date, time
+
+
 
 from saas.models import NEW, IN_PROGRESS, DONE
+
+# from school_saas.settings import MEDIA_URL
 
 
 def home(request):
@@ -324,56 +329,60 @@ def school(request):
     context = {
         'school': school,
         'last_modification': last_modification,
+        'images': Image_Logo.objects.filter(school=school).order_by('-created')[:3],
+        # 'MEDIA_URL': MEDIA_URL,
     }
-    try:
-        # try:
-        #
-        # except:
-        #     pass
+    if not request.method == 'GET':
         try:
-            old_email = request.POST['old_email']
+            # try:
+            #
+            # except:
+            #     pass
+            try:
+                old_email = request.POST['old_email']
+            except:
+                pass
+            context['last_name'] = chair.last_name
+            context['first_name'] = chair.first_name
+
+
+            if request.method == 'POST' and request.POST['school']:
+                form = SchoolRegistration(request.POST)
+                if form.is_valid():
+                    address_1 = form.cleaned_data['address_1']
+                    address_2 = form.cleaned_data['address_2']
+                    city = form.cleaned_data['city']
+                    state = form.cleaned_data['state']
+                    zipcode = form.cleaned_data['zipcode']
+                    pta_paid_date = form.cleaned_data['pta_paid_date']
+                    pta_paid = form.cleaned_data['pta_paid']
+                    name = form.cleaned_data['school']
+
+                    School.objects.filter(id=school.id).update(name=name, pta_paid=pta_paid, pta_paid_date=pta_paid_date,
+                                                               state=state, city=city, address_1=address_1, address_2=address_2, zipcode=zipcode )
+                    return redirect('/school')
+
         except:
             pass
-        context = {
-            "first_name": chair.first_name,
-            "last_name": chair.last_name,
-            # 'school_info': school,
-            'school': school,
-            'last_modification': last_modification,
-            # 'counter': counter,
-        }
-        if request.method == 'POST' and request.POST['school']:
-            form = SchoolRegistration(request.POST)
-            if form.is_valid():
-                address_1 = form.cleaned_data['address_1']
-                address_2 = form.cleaned_data['address_2']
-                city = form.cleaned_data['city']
-                state = form.cleaned_data['state']
-                zipcode = form.cleaned_data['zipcode']
-                pta_paid_date = form.cleaned_data['pta_paid_date']
-                pta_paid = form.cleaned_data['pta_paid']
-                name = form.cleaned_data['school']
+        try:
+            if request.method == 'POST' and request.POST['img']:
+                print "request.method == 'POST' and request.POST['img']"
+                path = "media/logo_%d_%s.jpg" % (school.id, datetime.now().strftime("%d_%m_%y_%H_%M"))
+                image = Image_Logo(path=path, school=school).save()
+                # school.image.add(image)
+                context['images'] = Image_Logo.objects.filter(school=school).order_by('-created')[:3]
+                from PIL import Image
+                import urllib
+                from io import BytesIO
+                import base64
+                data = urllib.unquote(request.POST['img_url'])
+                im = Image.open(BytesIO(base64.b64decode(data)))
+                im.save(path)
+                print "2", context
+        except Exception as e:
+            print e
 
-                School.objects.filter(id=school.id).update(name=name, pta_paid=pta_paid, pta_paid_date=pta_paid_date,
-                                                           state=state, city=city, address_1=address_1, address_2=address_2, zipcode=zipcode )
-                return redirect('/school')
-
-    except:
-        pass
-    try:
-        if request.method == 'POST' and request.POST['img']:
-            request.POST['img_url']
-            path = "saas/static/img/school_images/%s.jpg" % 'logo'
-            from PIL import Image
-            import urllib
-            from io import BytesIO
-            import base64
-            data = urllib.unquote(request.POST['img_url'])
-            im = Image.open(BytesIO(base64.b64decode(data)))
-            im.save(path)
-
-    except Exception as e:
-        print e
+    print "1",  context
     return render(request, "school.html", context)
 
 

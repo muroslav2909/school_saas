@@ -46,3 +46,7 @@ class ResultAdmin(admin.ModelAdmin):
     list_display = [f.name for f in Result._meta.fields]
 admin.site.register(Result, ResultAdmin)
 
+class Image_LogoAdmin(admin.ModelAdmin):
+    list_display = ['path', 'created', 'updated']
+admin.site.register(Image_Logo, Image_LogoAdmin)
+

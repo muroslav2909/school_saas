@@ -132,14 +132,24 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 # STATIC_URL = '/static/'
+
+MEDIA_URL = 'media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
 STATIC_URL = '/'
 STATIC_ROOT = os.path.join('static/')
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
+# STATIC_ROOT = os.path.join('media/')
 TEMPLATES_ROOT = os.path.join(BASE_DIR, 'templates')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static', "admin", "css"),
     os.path.join(BASE_DIR, 'static', "admin", "js"),
     os.path.join(BASE_DIR, 'static', "admin", "img"),
-
+    # os.path.join(MEDIA_ROOT),
     os.path.join(BASE_DIR, 'static', "admin"),
     # os.path.join(BASE_DIR, 'static', "admin", "js"),
     # os.path.join(BASE_DIR, 'static', "admin", "img"),
@@ -154,7 +164,7 @@ STATICFILES_DIRS = (
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [STATIC_ROOT],
+        'DIRS': [STATIC_ROOT, MEDIA_ROOT],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -162,6 +172,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
+
             ],
         },
     },
