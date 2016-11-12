@@ -81,3 +81,6 @@ class ParentInvite(forms.Form):
 class JudgeInvite(forms.Form):
     ranking_factors = forms.CharField()
     email = forms.EmailField()
+
+class ImgValidation(forms.Form):
+    img_url = forms.CharField(required=True)

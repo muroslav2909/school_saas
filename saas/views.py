@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from saas.forms import FirstStepRegistration, ParentRegistration, SchoolRegistration, \
     JudgesRegistration, ChairRegistration, VolunteerRegistration, PTABoardRegistration,\
-    TaskRegistration, ParentInvite, JudgeInvite
+    TaskRegistration, ParentInvite, JudgeInvite, ImgValidation
 
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
@@ -320,19 +320,24 @@ def pta_board(request):
         pass
     return render(request, "pta_board.html", context)
 
-
 def school(request):
 
     chair = Admin.objects.get(user=request.user)
     school = School.objects.get(id=chair.school.all()[0].id)
     last_modification = school.updated
+    images = Image_Logo.objects.filter(school=school).order_by('-created')[:3]
+    Image_Logo.objects.filter(school=school).exclude(id__in=map(lambda x: x.id, images)).delete()
     context = {
         'school': school,
         'last_modification': last_modification,
-        'images': Image_Logo.objects.filter(school=school).order_by('-created')[:3],
+        'images': images[:3],
         # 'MEDIA_URL': MEDIA_URL,
     }
-    if not request.method == 'GET':
+
+    # if request.method == 'GET':
+    #     print "4efgffffffffffffffffffffffffffffffffffffffffffffffffff"
+    #     form = SchoolRegistration()
+    if 'img' or 'school'in request.POST:
         try:
             # try:
             #
@@ -345,8 +350,8 @@ def school(request):
             context['last_name'] = chair.last_name
             context['first_name'] = chair.first_name
 
-
-            if request.method == 'POST' and request.POST['school']:
+            if 'school' in request.POST:
+            # if request.method == 'POST' and request.POST['school']:
                 form = SchoolRegistration(request.POST)
                 if form.is_valid():
                     address_1 = form.cleaned_data['address_1']
@@ -365,24 +370,24 @@ def school(request):
         except:
             pass
         try:
-            if request.method == 'POST' and request.POST['img']:
-                print "request.method == 'POST' and request.POST['img']"
-                path = "media/logo_%d_%s.jpg" % (school.id, datetime.now().strftime("%d_%m_%y_%H_%M"))
-                image = Image_Logo(path=path, school=school).save()
-                # school.image.add(image)
-                context['images'] = Image_Logo.objects.filter(school=school).order_by('-created')[:3]
-                from PIL import Image
-                import urllib
-                from io import BytesIO
-                import base64
-                data = urllib.unquote(request.POST['img_url'])
-                im = Image.open(BytesIO(base64.b64decode(data)))
-                im.save(path)
-                print "2", context
+            if 'img' in request.POST:
+                form = ImgValidation(request.POST)
+                if form.is_valid():
+                    print "request.method == 'POST' and request.POST['img']"
+                    path = "media/logo_%d_%s.jpg" % (school.id, datetime.now().strftime("%d_%m_%y_%H_%M"))
+                    image = Image_Logo(path=path, school=school).save()
+                    context['images'] = Image_Logo.objects.filter(school=school).order_by('-created')[:3]
+                    from PIL import Image
+                    import urllib
+                    from io import BytesIO
+                    import base64
+                    data = urllib.unquote(request.POST['img_url'])
+                    im = Image.open(BytesIO(base64.b64decode(data)))
+                    im.save(path)
+                    return redirect('/school')
         except Exception as e:
             print e
 
-    print "1",  context
     return render(request, "school.html", context)
 
 

@@ -31,19 +31,29 @@
 
                             <div class="col-md-5">
                                 <div class="product-images">
-                                    {% for img in images %}
-                                        {% if img.path %}
-                                        <div>
-                                            <img src="{{ img.path }}" alt="schol logo" height="418" width="343">
-                                        </div>
-                                        {% else %}
+                                    {% if images %}
+                                        {% for img in images %}
                                             <div>
-                                        <div class="image-imitation">
-                                            [IMAGE]
+                                                <img src="{{ img.path }}" alt="schol logo" height="418" width="343">
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div>
+                                            <div class="image-imitation">
+                                                [IMAGE 1]
+                                            </div>
                                         </div>
-                                    </div>
-                                        {% endif %}
-                                    {% endfor %}
+                                        <div>
+                                            <div class="image-imitation">
+                                                [IMAGE 2]
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="image-imitation">
+                                                [IMAGE 3]
+                                            </div>
+                                        </div>
+                                    {% endif %}
 
                                 </div>
                             </div>
@@ -216,23 +226,18 @@
 
                                     <form method="post" action="" class="form-horizontal">
                                     {% csrf_token %}
-                                    <div  class="btn-group">
-                                        <div class="col-sm-10" style="display:none">
-                                            <input id="img_url" name="img_url" type="text" class="form-control">
+                                        <div  class="btn-group">
+                                            <div class="col-sm-10" style="display:none">
+                                                <input id="img_url" name="img_url" type="text" class="form-control">
+                                            </div>
+
+                                        <div style="margin-left:1px; margin-top:-2px" class="form-group">
+                                            <input type="hidden" name="img" value="yes" />
+                                            <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Save changes as ...</button>
                                         </div>
 
-
-
-
-
-                                    <div style="margin-left:1px; margin-top:-2px" class="form-group">
-                                        <input type="hidden" name="img" value="yes" />
-                                        <button disabled class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Save changes as ...</button>
-                                    </div>
-
-
-                                    </div>
-                                </form>
+                                        </div>
+                                    </form>
 
 
 

@@ -352,13 +352,15 @@
             $('.product-images').slick({
                 dots: true
             });
+            <!--document.getElementById('img_url').value='';-->
             var $image = $(".image-crop > img")
             $($image).cropper({
                 aspectRatio: 1.618,
                 preview: ".img-preview",
                 done: function(data) {
+                    <!--if(document.getElementById("full_img").src.indexOf("img/p3.jpg") <= 0){-->
                     document.getElementById("img_url").value=($image.cropper("getDataURL")).replace(/^data:image\/(png|jpg);base64,/, "");
-
+                    <!--}-->
                 }
             });
 
