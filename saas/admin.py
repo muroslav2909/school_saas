@@ -50,3 +50,8 @@ class Image_LogoAdmin(admin.ModelAdmin):
     list_display = ['path', 'created', 'updated']
 admin.site.register(Image_Logo, Image_LogoAdmin)
 
+
+class TaskFilesAdmin(admin.ModelAdmin):
+    list_display = [f.name for f in TaskFiles._meta.fields]
+admin.site.register(TaskFiles, TaskFilesAdmin)
+

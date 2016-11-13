@@ -3,41 +3,19 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from saas.forms import FirstStepRegistration, ParentRegistration, SchoolRegistration, \
     JudgesRegistration, ChairRegistration, VolunteerRegistration, PTABoardRegistration,\
-    TaskRegistration, ParentInvite, JudgeInvite, ImgValidation, ForgotPass
+    TaskRegistration, ParentInvite, JudgeInvite, ImgValidation, ForgotPass, ChildRegistration
 from django.template import Context, Template
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
-from saas.models import Parent, School, Judge, Admin, Volunteer, PTABoard, Task, Image_Logo
+from saas.models import Parent, School, Judge, Admin, Volunteer, PTABoard, Task, Image_Logo, Child
 from django.contrib.sessions.models import Session
 from datetime import datetime, date, time
 from django.utils.crypto import get_random_string
-
-
-from saas.models import NEW, IN_PROGRESS, DONE
-
-# from school_saas.settings import MEDIA_URL
 from saas.notification_manager import send_letter
-
 from school_saas.settings import BASE_DIR
-
 
 def home(request):
     context = {}
-
-    # if request.method == 'POST' and request.POST['post']:
-    #     email = request.POST['email']
-    #     password = request.POST['password']
-    #     user, created = User.objects.get_or_create(username=email, password=password)
-    #     if not created:
-    #         print "not created"
-    #         logout(request)
-    #         user.backend = 'django.contrib.auth.backends.ModelBackend'
-    #         user.save()
-    #         auth = authenticate(username=email, password=password)
-    #         login(request, user)
-    #         return redirect("/main")
-    #     else:
-    #         context = {'er1': 'yes'}
     return render(request, "landing.html", context)
 
 def main_logout(request):
@@ -48,8 +26,6 @@ def main_logout(request):
     return redirect('/main_login')
 
 def main_login(request):
-    # if request.user.is_authenticated():
-    #     return redirect("/main")
     context = {}
     try:
         if request.method == 'POST' and request.POST['post']:
@@ -76,7 +52,6 @@ def register(request):
         form = FirstStepRegistration(request.POST)
         if form.is_valid():
             try:
-            # role = request.POST['role']
                 password = form.cleaned_data['password']
                 email = form.cleaned_data['email']
                 user, created = User.objects.get_or_create(username=email, password=password)
@@ -99,7 +74,6 @@ def forgot_password(request):
         form = ForgotPass(request.POST)
         try:
             if form.is_valid():
-
                 pass_gen = get_random_string(length=8)
                 email = form.cleaned_data['email']
                 context = Context({'pass_gen': pass_gen})
@@ -110,7 +84,6 @@ def forgot_password(request):
                     user.password = pass_gen
                     user.save()
                 return redirect('/main_login')
-
         except Exception as e:
             print e
     return render(request, "auth/forgot_password.html", context)
@@ -118,26 +91,7 @@ def forgot_password(request):
 @login_required
 def intermid(request):
     context = {}
-    # if request.method == 'POST' and request.POST['post']:
-    #     form = FirstStepRegistration(request.POST)
-    #     if form.is_valid():
-    #         role = request.POST['role']
-    #         password = form.cleaned_data['password']
-    #         email = form.cleaned_data['email']
-    #         user, created = User.objects.get_or_create(username=email, password=password)
-    #         user.backend = 'django.contrib.auth.backends.ModelBackend'
-    #         user.save()
-    #         auth = authenticate(username=user.username, password=user.password)
-    #         if not created:
-    #             login(request, auth)
-    #             return redirect("/main")
-    #
-    #         login(request, user)
-    #         path = "%s_register" % role
-    #
-    #         return redirect(path)
     return render(request, "itermid_registr_page.html", context)
-
 
 @login_required
 def parent_register(request):
@@ -366,27 +320,14 @@ def school(request):
         'school': school,
         'last_modification': last_modification,
         'images': images[:3],
-        # 'MEDIA_URL': MEDIA_URL,
     }
 
-    # if request.method == 'GET':
-    #     print "4efgffffffffffffffffffffffffffffffffffffffffffffffffff"
-    #     form = SchoolRegistration()
     if 'img' or 'school'in request.POST:
         try:
-            # try:
-            #
-            # except:
-            #     pass
-            try:
-                old_email = request.POST['old_email']
-            except:
-                pass
             context['last_name'] = chair.last_name
             context['first_name'] = chair.first_name
 
             if 'school' in request.POST:
-            # if request.method == 'POST' and request.POST['school']:
                 form = SchoolRegistration(request.POST)
                 if form.is_valid():
                     address_1 = form.cleaned_data['address_1']
@@ -496,9 +437,6 @@ def tasks(request):
     return render(request, "tasks.html", context)
 
 
-
-
-
 def parents(request):
     context = {}
     parents = None
@@ -570,3 +508,51 @@ def judges(request):
     except:
         pass
     return render(request, "judges.html", context)
+
+
+
+def children(request):
+    context = {}
+    children = None
+    last_modification = ''
+    counter = 0
+    try:
+        parent = Parent.objects.get(user=request.user)
+        school = School.objects.get(id=parent.school.all()[0].id)
+        schools = School.objects.all()
+        try:
+            children = Child.objects.filter().order_by('-created')
+            last_modification = children.order_by('updated')[0].updated
+            counter = children.count()
+        except:
+            pass
+        context = {
+            'parent': parent,
+            'children': children,
+            'school': school,
+            'schools': schools,
+            'last_modification': last_modification,
+            'counter': counter,
+        }
+        if request.method == 'POST' and request.POST['children']:
+            form = ChildRegistration(request.POST)
+            if form.is_valid():
+                first_name = form.cleaned_data['first_name']
+                last_name = form.cleaned_data['last_name']
+                grade = form.cleaned_data['grade']
+                class_teacher_name = form.cleaned_data['class_teacher_name']
+                # school = School.objects.get(id=int(request.POST['children']))
+
+                child, created = Child.objects.get_or_create(first_name=first_name,
+                                                                defaults={
+                                                                    'last_name': last_name,
+                                                                    'grade': grade,
+                                                                    'class_teacher_name': class_teacher_name,
+                                                                })
+                child.save()
+                child.school.add(school)
+
+                return redirect('/children')
+    except:
+        pass
+    return render(request, "children.html", context)

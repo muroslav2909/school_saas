@@ -87,3 +87,10 @@ class ImgValidation(forms.Form):
 
 class ForgotPass(forms.Form):
     email = forms.EmailField()
+
+class ChildRegistration(forms.Form):
+    first_name = forms.CharField()
+    last_name = forms.CharField(required=False)
+    grade = forms.CharField(required=False)
+    class_teacher_name = forms.CharField(required=False)
+    school = forms.CharField(required=False)

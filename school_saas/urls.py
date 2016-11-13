@@ -40,7 +40,10 @@ urlpatterns = [
     url(r'^parents', views.parents, name='parents'),
     url(r'^judges', views.judges, name='judges'),
     url(r'^favicon\.ico$', RedirectView.as_view(url='/img/Sweg_S.png')),
-    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT})
+    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    url(r'^children', views.children, name='children'),
+
+
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)\
               + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

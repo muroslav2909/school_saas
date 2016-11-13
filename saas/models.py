@@ -37,6 +37,9 @@ class Image_Logo(models.Model):
     updated = models.DateTimeField(auto_now=True)
     school = models.ForeignKey(School, null=True, blank=True)
 
+
+
+
 class PTABoard(models.Model):
     role = models.CharField(max_length=50, null=True, blank=True)
     first_name = models.CharField(max_length=50, null=True, blank=True)
@@ -76,6 +79,14 @@ class Task(models.Model):
     asignee = models.ForeignKey(Volunteer, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated = models.DateTimeField(auto_now=True, null=True, blank=True)
+
+
+class TaskFiles(models.Model):
+    path = models.CharField(max_length=100, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    task = models.ForeignKey(Task, null=True, blank=True)
+
 
 class Expenses(models.Model):
     school = models.ManyToManyField(School)
@@ -137,6 +148,9 @@ class Child(models.Model):
     last_name = models.CharField(max_length=50, null=True, blank=True)
     grade = models.CharField(max_length=50, null=True, blank=True)
     class_teacher_name = models.CharField(max_length=50, null=True, blank=True)
+    school = models.ManyToManyField(School)
+    created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     def __unicode__(self):
         return unicode(self.id)
