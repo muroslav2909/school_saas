@@ -93,4 +93,4 @@ class ChildRegistration(forms.Form):
     last_name = forms.CharField(required=False)
     grade = forms.CharField(required=False)
     class_teacher_name = forms.CharField(required=False)
-    school = forms.CharField(required=False)
+    schools = forms.CharField(required=False)

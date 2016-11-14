@@ -540,8 +540,8 @@ def children(request):
                 first_name = form.cleaned_data['first_name']
                 last_name = form.cleaned_data['last_name']
                 grade = form.cleaned_data['grade']
+
                 class_teacher_name = form.cleaned_data['class_teacher_name']
-                # school = School.objects.get(id=int(request.POST['children']))
 
                 child, created = Child.objects.get_or_create(first_name=first_name,
                                                                 defaults={
@@ -550,7 +550,13 @@ def children(request):
                                                                     'class_teacher_name': class_teacher_name,
                                                                 })
                 child.save()
-                child.school.add(school)
+                child.parent.add(parent)
+                try:
+                    for s in School.objects.filter(name__in=request.POST['children'].split('|||')):
+                        child.school.add(s)
+                except:
+                    pass
+                context['children'] = Child.objects.filter().order_by('-created')
 
                 return redirect('/children')
     except:

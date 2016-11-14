@@ -81,22 +81,15 @@
 
 
 
-
-
-
-
-
-
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Schools</label>
                                             <div class="col-md-4">
 
-                                                    <select style="width:526px;" class="select2_demo_2 form-control" multiple="multiple">
-                                                        {% for s in schools %}
-                                                            <option value="{{s.id}}">{{ s.name }}</option>
-                                                        {% endfor %}
-                                                     </select>
-
+                                                <select  id="schools" name="schools" style="width:526px;" class="select2_demo_2 form-control" multiple="multiple">
+                                                    {% for s in schools %}
+                                                        <option value="{{s.id}}">{{ s.name }}</option>
+                                                    {% endfor %}
+                                                 </select>
 
                                             </div>
                                         </div>
@@ -111,16 +104,13 @@
                                             </div>
                                         </div>
 
-
                                         <div class="hr-line-dashed"></div>
-
-
 
 
 
                                         <div class="form-group">
                                             <div class="col-sm-4 col-sm-offset-2">
-                                                <input type="hidden" name="children" value="yes" />
+                                                <input id='schools_ids' type="hidden" name="children" value="yes" />
                                                 <button class="btn btn-primary" type="submit">Save child</button>
                                             </div>
                                         </div>
@@ -157,7 +147,7 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-8">
-                                        <a data-toggle="tab" href="#tab-2"><button onclick="FillForm('{{ volunteer.first_name }}', '{{ volunteer.last_name }}', '{{ volunteer.email }}', '{{ volunteer.phone }}'); $('#tab_2').attr('class', 'active');$('#tab_1').attr('class', '');" type="button" class="btn btn-primary btn-sm btn-block">
+                                        <a data-toggle="tab" href="#tab-2"><button onclick="FillForm('{{ child.first_name }}', '{{ child.last_name }}', '{{ child.grade }}', '{{ child.class_teacher_name }}'); $('#tab_2').attr('class', 'active');$('#tab_1').attr('class', '');" type="button" class="btn btn-primary btn-sm btn-block">
                                             <i class="fa fa-edit"></i>   Edit info
                                         </button></a>
                                          </br>
@@ -171,19 +161,27 @@
                                         <li class="list-group-item fist-item">
                                             {{ child.first_name }} {{ child.last_name }}
                                         </li>
-                                        <li class="list-group-item">
-                                            <span class="pull-right"> <p class="contact-type"><i class="fa fa-university"> </i></p></span>
-                                            {{ school }}
-                                        </li>
-                                        <!--<li class="list-group-item">-->
-                                            <!--<span class="pull-right"> <p class="contact-type"><i class="fa fa-envelope"> </i></p></span>-->
-                                            <!--{{ child.email }}-->
-                                        <!--</li>-->
 
-                                        <!--<li class="list-group-item">-->
-                                            <!--<span class="pull-right"> <p class="contact-type"><i class="fa fa-phone"> </i></p></span>-->
-                                            <!--{{ volunteer.phone }}-->
-                                        <!--</li>-->
+
+                                        <li class="list-group-item">
+                                            <strong>Schools</strong></br>
+                                            <span class="pull-right"> <p class="contact-type"><i class="fa fa-university"> </i></p></span>
+                                            {% for s in child.school.all %}
+                                                {{ s.name }},
+                                            {% endfor %}
+                                        </li>
+
+                                        <li class="list-group-item">
+                                            <strong>Grade</strong></br>
+                                            <span class="pull-right"> <p class="contact-type"><i class="fa fa-graduation-cap"> </i></p></span>
+                                            {{ child.grade }}
+                                        </li>
+
+                                         <li class="list-group-item">
+                                            <strong>Teacher</strong></br>
+                                            <span class="pull-right"> <p class="contact-type"><i class="fa fa-eye"> </i></p></span>
+                                            {{ child.class_teacher_name }}
+                                        </li>
 
 
                                         <!--<li class="list-group-item">-->
@@ -210,12 +208,11 @@
 
 {% block js %}
 
-<script> function FillForm(first_name, last_name, email, phone) {
-    document.getElementById("old_email").value=email;
+<script> function FillForm(first_name, last_name, grade, class_teacher_name) {
     document.getElementById("first_name").value=first_name;
     document.getElementById("last_name").value=last_name;
-    document.getElementById("email").value=email;
-    document.getElementById("phone").value=phone;
+    document.getElementById("grade").value=grade;
+    document.getElementById("class_teacher_name").value=class_teacher_name;
     }
 </script>
 
@@ -226,5 +223,23 @@
         }
         window.onload = codeAddress;
 </script>
+
+
+
+
+
+<script>
+    var sel = document.getElementById('schools');
+    sel.onchange = function () {
+        for (i = 0, len = $('.select2-selection__choice').length, text = ""; i < len; i++)
+        {
+            text += '|||' + $('.select2-selection__choice')[i].title;
+        }
+        $('#schools_ids').attr('value', text);
+    }
+</script>
+
+
+
 
 {% endblock %}
