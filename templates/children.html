@@ -82,17 +82,36 @@
 
 
 
+
+
+
+
+
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Schools</label>
                                             <div class="col-md-4">
-                                                {% for s in schools %}
-                                                    <select class="select2_demo_2 form-control" multiple="multiple">
-                                                        <option value="{{s.id}}">{{ s.name }}</option>
+
+                                                    <select style="width:526px;" class="select2_demo_2 form-control" multiple="multiple">
+                                                        {% for s in schools %}
+                                                            <option value="{{s.id}}">{{ s.name }}</option>
+                                                        {% endfor %}
                                                      </select>
-                                                {% endfor %}
+
 
                                             </div>
                                         </div>
+
+                                        <div style="display:none" class="row">
+                                            <div class="col-sm-10">
+                                                <div class="ibox float-e-margins">
+                                                    <div class="ibox-title  back-change">
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
                                         <div class="hr-line-dashed"></div>
 
 
