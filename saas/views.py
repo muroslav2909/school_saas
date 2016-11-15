@@ -3,11 +3,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from saas.forms import FirstStepRegistration, ParentRegistration, SchoolRegistration, \
     JudgesRegistration, ChairRegistration, VolunteerRegistration, PTABoardRegistration,\
-    TaskRegistration, ParentInvite, JudgeInvite, ImgValidation, ForgotPass, ChildRegistration
+    TaskRegistration, ParentInvite, JudgeInvite, ImgValidation, ForgotPass, ChildRegistration,\
+    ExpensesRegistration
 from django.template import Context, Template
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
-from saas.models import Parent, School, Judge, Admin, Volunteer, PTABoard, Task, Image_Logo, Child
+from saas.models import Parent, School, Judge, Admin, Volunteer, PTABoard, Task, Image_Logo, Child, Expenses
 from django.contrib.sessions.models import Session
 from datetime import datetime, date, time
 from django.utils.crypto import get_random_string
@@ -562,3 +563,65 @@ def children(request):
     except:
         pass
     return render(request, "children.html", context)
+
+
+
+
+def expenses(request):
+    context = {}
+    expenses = None
+    last_modification = ''
+    counter = 0
+    expense_id = None
+    try:
+        chair = Admin.objects.get(user=request.user)
+        school = School.objects.get(id=chair.school.all()[0].id)
+        try:
+            expenses = Expenses.objects.filter(school=school).order_by('-created')
+            last_modification = expenses.order_by('updated')[0].updated
+            counter = expenses.count()
+        except:
+            pass
+        context = {
+            "first_name": chair.first_name,
+            "last_name": chair.last_name,
+            'expenses': expenses,
+            'school': school,
+            'last_modification': last_modification,
+            'counter': counter,
+            # 'asignees': Volunteer.objects.filter(school=school),
+        }
+        if request.method == 'POST' and request.POST['expenses']:
+            print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            form = ExpensesRegistration(request.POST)
+            if form.is_valid():
+
+                # school = forms.forms.CharField(required=False)
+
+                expense_category = form.cleaned_data['expense_category']
+                expense_description = form.cleaned_data['expense_description']
+                expense_date = form.cleaned_data['expense_date']
+                expense_amount = form.cleaned_data['expense_amount']
+                status = form.cleaned_data['status']
+
+                try:#if edit
+                    expense_id = request.POST['expense_id']
+                except:
+                    pass
+                if not expense_id:
+                    expense = Expenses(expense_category=expense_category, expense_description=expense_description, expense_date=expense_date,
+                                    expense_amount=expense_amount,
+                                                           status=status
+                                                           )
+                    expense.save()
+                    expense.school.add(school)
+                else:
+                    expense = Expenses.objects.filter(id=int(expense_id))
+                    expense.update(expense_category=expense_category, expense_description=expense_description, expense_date=expense_date,
+                                    expense_amount=expense_amount, status=status
+                                                           )
+
+                return redirect('/expenses')
+    except:
+        pass
+    return render(request, "expenses.html", context)

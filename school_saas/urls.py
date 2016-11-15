@@ -42,6 +42,7 @@ urlpatterns = [
     url(r'^favicon\.ico$', RedirectView.as_view(url='/img/Sweg_S.png')),
     url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^children', views.children, name='children'),
+    url(r'^expenses', views.expenses, name='expenses'),
 
 
 

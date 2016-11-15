@@ -94,3 +94,22 @@ class ChildRegistration(forms.Form):
     grade = forms.CharField(required=False)
     class_teacher_name = forms.CharField(required=False)
     schools = forms.CharField(required=False)
+
+class ExpensesRegistration(forms.Form):
+    # school = forms.CharField(required=False)
+    expense_category = forms.CharField(required=False)
+    expense_description = forms.CharField(required=False)
+    expense_date = forms.CharField(required=False)
+    expense_amount = forms.CharField(required=False)
+    status = forms.CharField(required=False)
+
+
+
+
+
+
+
+
+
+
+
