@@ -30,7 +30,7 @@
                                         <tr onclick="$('#main_div').attr('class', 'col-sm-8'); $('#block_info').show();">
                                             <td class="client-avatar"><img alt="image" src="img/nobody_m.original.jpg"> </td>
                                             <td><a data-toggle="tab" href="#contact-{{ child.id }}" class="client-link">{{ child.first_name }} {{ child.last_name }}</a></td>
-                                            <td><a data-toggle="tab" href="#contact-{{ child.id }}" class="client-link"> {{ school }}</a></td>
+                                            <td><a data-toggle="tab" href="#contact-{{ child.id }}" class="client-link"> {{ child.school }}</a></td>
                                             <!--<td class="contact-type"><i class="fa fa-envelope"> </i></td>-->
                                             <!--<td><a data-toggle="tab" href="#contact-{{ volunteer.id }}" class="client-link"> {{ volunteer.email }}</a></td>-->
                                             <!--<td class="client-status"><span class="label label-primary"><a data-toggle="tab" href="#contact-{{ volunteer.id }}" class="client-link">Active</a></span></td>-->
@@ -50,6 +50,9 @@
                                     <form style="margin-top:25px;" method="post" action="" class="form-horizontal">
                                         {% csrf_token %}
 
+                                        <div class="col-sm-10" style="display:none"><input id="child_id" name="child_id" type="text" class="form-control"></div>
+
+
                                         <!--<div class="col-sm-10" style="display:none"><input id="old_email" name="old_email" type="text" class="form-control"></div>-->
 
 
@@ -65,11 +68,30 @@
                                         <div class="hr-line-dashed"></div>
 
 
-                                        <div class="form-group"><label class="col-sm-2 control-label">Grade *</label>
-                                            <div class="col-sm-10"><input id="grade" required="" name="grade" pattern=".{3,}" title="Minimum 3 characters required" type="text" placeholder="Grade" class="form-control"></div>
-                                        </div>
-                                        <div class="hr-line-dashed"></div>
 
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Grade *</label>
+                                            <div class="col-md-4">
+
+                                                <select  id="grade" name="grade" style="width:526px;" class="select2_demo_2 form-control">
+                                                    <option value="1st grade">1st grade</option>
+                                                    <option value="2nd grade">2nd grade</option>
+                                                    <option value="3rd grade">3rd grade</option>
+                                                    <option value="4th grade">4th grade</option>
+                                                    <option value="5th grade">5th grade</option>
+                                                    <option value="6th grade">6th grade</option>
+                                                    <option value="7th grade">7th grade</option>
+                                                    <option value="8th grade">8th grade</option>
+                                                    <option value="9th grade">9th grade</option>
+                                                    <option value="10th grade">10th grade</option>
+                                                    <option value="11th grade">11th grade</option>
+                                                    <option value="12th grade">12th grade</option>
+                                                 </select>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="hr-line-dashed"></div>
 
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Class teacher name *</label>
@@ -82,10 +104,11 @@
 
 
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Schools</label>
+                                            <label class="col-sm-2 control-label">School</label>
                                             <div class="col-md-4">
 
-                                                <select  id="schools" name="schools" style="width:526px;" class="select2_demo_2 form-control" multiple="multiple">
+                                                <select  id="schools" name="schools" style="width:526px;" class="select2_demo_2 form-control">
+                                                     <!--multiple="multiple"-->
                                                     {% for s in schools %}
                                                         <option value="{{s.id}}">{{ s.name }}</option>
                                                     {% endfor %}
@@ -147,7 +170,7 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-8">
-                                        <a data-toggle="tab" href="#tab-2"><button onclick="FillForm('{{ child.first_name }}', '{{ child.last_name }}', '{{ child.grade }}', '{{ child.class_teacher_name }}'); $('#tab_2').attr('class', 'active');$('#tab_1').attr('class', '');" type="button" class="btn btn-primary btn-sm btn-block">
+                                        <a data-toggle="tab" href="#tab-2"><button onclick="FillForm('{{ child.id }}', '{{ child.first_name }}', '{{ child.last_name }}', '{{ child.grade }}', '{{ child.class_teacher_name }}'); $('#tab_2').attr('class', 'active');$('#tab_1').attr('class', '');" type="button" class="btn btn-primary btn-sm btn-block">
                                             <i class="fa fa-edit"></i>   Edit info
                                         </button></a>
                                          </br>
@@ -164,11 +187,12 @@
 
 
                                         <li class="list-group-item">
-                                            <strong>Schools</strong></br>
+                                            <strong>School</strong></br>
                                             <span class="pull-right"> <p class="contact-type"><i class="fa fa-university"> </i></p></span>
-                                            {% for s in child.school.all %}
-                                                {{ s.name }},
-                                            {% endfor %}
+                                            {{ child.school }}
+                                            <!--{% for s in child.school.all %}-->
+                                                <!--{{ s.name }},-->
+                                            <!--{% endfor %}-->
                                         </li>
 
                                         <li class="list-group-item">
@@ -208,7 +232,8 @@
 
 {% block js %}
 
-<script> function FillForm(first_name, last_name, grade, class_teacher_name) {
+<script> function FillForm(child_id, first_name, last_name, grade, class_teacher_name) {
+    document.getElementById("child_id").value=child_id;
     document.getElementById("first_name").value=first_name;
     document.getElementById("last_name").value=last_name;
     document.getElementById("grade").value=grade;
@@ -231,11 +256,11 @@
 <script>
     var sel = document.getElementById('schools');
     sel.onchange = function () {
-        for (i = 0, len = $('.select2-selection__choice').length, text = ""; i < len; i++)
-        {
-            text += '|||' + $('.select2-selection__choice')[i].title;
-        }
-        $('#schools_ids').attr('value', text);
+        <!--for (i = 0, len = $('.select2-selection__choice').length, text = ""; i < len; i++)-->
+        <!--{-->
+        <!--text=$('.select2-selection__choice').title;#[i]-->
+        <!--}-->
+        $('#schools_ids').attr('value', $('#select2-schools-container')[0].title);
     }
 </script>
 

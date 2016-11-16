@@ -517,12 +517,13 @@ def children(request):
     children = None
     last_modification = ''
     counter = 0
+    child_id = None
     try:
         parent = Parent.objects.get(user=request.user)
         school = School.objects.get(id=parent.school.all()[0].id)
         schools = School.objects.all()
         try:
-            children = Child.objects.filter().order_by('-created')
+            children = Child.objects.filter(parent=parent).order_by('-created')
             last_modification = children.order_by('updated')[0].updated
             counter = children.count()
         except:
@@ -535,30 +536,36 @@ def children(request):
             'last_modification': last_modification,
             'counter': counter,
         }
+        try:  # if edit
+            child_id = request.POST['child_id']
+        except:
+            pass
+
+
         if request.method == 'POST' and request.POST['children']:
             form = ChildRegistration(request.POST)
             if form.is_valid():
                 first_name = form.cleaned_data['first_name']
                 last_name = form.cleaned_data['last_name']
                 grade = form.cleaned_data['grade']
-
+                schoolsss = form.cleaned_data['schools']
+                print "gradegrade", grade
                 class_teacher_name = form.cleaned_data['class_teacher_name']
-
-                child, created = Child.objects.get_or_create(first_name=first_name,
-                                                                defaults={
-                                                                    'last_name': last_name,
-                                                                    'grade': grade,
-                                                                    'class_teacher_name': class_teacher_name,
-                                                                })
-                child.save()
-                child.parent.add(parent)
                 try:
-                    for s in School.objects.filter(name__in=request.POST['children'].split('|||')):
-                        child.school.add(s)
+                    s = School.objects.get(id=int(schoolsss))
                 except:
-                    pass
-                context['children'] = Child.objects.filter().order_by('-created')
-
+                    print "ergexceptexceptexceptgrg"
+                if not child_id:
+                    child = Child(first_name=first_name, last_name=last_name, grade=grade, class_teacher_name=class_teacher_name, school=s)
+                    child.save()
+                    child.parent.add(parent)
+                    context['children'] = Child.objects.filter(parent=parent).order_by('-created')
+                else:
+                    c = Child.objects.filter(id=int(child_id))
+                    # c.school = s
+                    # c.save()
+                    c.update(first_name=first_name, last_name=last_name, grade=grade, class_teacher_name=class_teacher_name, school=s)
+                    # c.save()
                 return redirect('/children')
     except:
         pass
@@ -578,7 +585,7 @@ def expenses(request):
         school = School.objects.get(id=chair.school.all()[0].id)
         try:
             expenses = Expenses.objects.filter(school=school).order_by('-created')
-            last_modification = expenses.order_by('updated')[0].updated
+            last_modification = expenses.order_by('updated')[0].created
             counter = expenses.count()
         except:
             pass
@@ -603,6 +610,8 @@ def expenses(request):
                 expense_date = form.cleaned_data['expense_date']
                 expense_amount = form.cleaned_data['expense_amount']
                 status = form.cleaned_data['status']
+                comments = form.cleaned_data['comments']
+
 
                 try:#if edit
                     expense_id = request.POST['expense_id']
@@ -610,15 +619,16 @@ def expenses(request):
                     pass
                 if not expense_id:
                     expense = Expenses(expense_category=expense_category, expense_description=expense_description, expense_date=expense_date,
-                                    expense_amount=expense_amount,
-                                                           status=status
+                                        expense_amount=expense_amount,
+                                        status=status,
+                                        comments=comments,
                                                            )
                     expense.save()
                     expense.school.add(school)
                 else:
                     expense = Expenses.objects.filter(id=int(expense_id))
                     expense.update(expense_category=expense_category, expense_description=expense_description, expense_date=expense_date,
-                                    expense_amount=expense_amount, status=status
+                                    expense_amount=expense_amount, status=status, comments=comments
                                                            )
 
                 return redirect('/expenses')

@@ -139,9 +139,14 @@
                                 <!--</div>-->
                                 <!--<div class="hr-line-dashed"></div>-->
 
+                                <div class="form-group"><label class="col-sm-2 control-label">Comments</label>
+                                    <div class="col-sm-10"><input id="comments" name="comments" type="text" placeholder="Comments" class="form-control"></div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+
 
                                 <div class="form-group"><label class="col-sm-2 control-label">Expenses amount</label>
-                                    <div class="col-sm-10"><input id="expense_amount" name="expense_amount" type="text" placeholder="Expenses amount" class="form-control"></div>
+                                    <div class="col-sm-10"><input id="expense_amount" name="expense_amount" type="text" pattern="[0-9]+(\.[0-9][0-9]?)?" placeholder="Expenses amount" class="form-control"></div>
                                 </div>
                                 <div class="hr-line-dashed"></div>
 
@@ -171,8 +176,8 @@
                     <div class="tab-content">
 
 
-                        {% for task in tasks %}
-                            <div id="contact-{{ task.id }}" class="tab-pane">
+                        {% for expense in expenses %}
+                            <div id="contact-{{ expense.id }}" class="tab-pane">
 
 
                                 <!--<form class="m-t" role="form" method="post" action="" >-->
@@ -194,65 +199,72 @@
 
 
 
-                                <button onclick="printDiv('contact-{{ task.id }}')" type="button" class="btn btn-sm btn-white pull-right"> <i class="fa fa-print"></i> </button>
-                                </br>
-                                <h2>Task #{{ task.id }}</h2>
+                                <!--<button onclick="printDiv('contact-{{ expense.id }}')" type="button" class="btn btn-sm btn-white pull-right"> <i class="fa fa-print"></i> </button>-->
+                                <!--</br>-->
+                                <h2>Expenses #{{ expense.id }}</h2>
 
                                 <div class="client-detail">
                                 <div class="full-height-scroll">
                                     <ul class="list-group clear-list">
 
                                         <li class="list-group-item">
-                                            <span class="pull-right"><p class="client-status"><span class="label label-primary">{{ task.status }}</span></p></span>
+                                            <span class="pull-right"><p class="client-status"><span class="label label-primary">{{ expense.status }}</span></p></span>
                                             <strong>Status</strong>
                                         </li>
 
                                         <li class="list-group-item">
                                             <strong>Category</strong></br>
                                             <span class="pull-right"> <p class="contact-type"><i class="fa fa-cubes"> </i></p></span>
-                                            {{ task.task_category }}
+                                            {{ expense.expense_category }}
                                         </li>
 
                                         <li class="list-group-item">
                                             <strong>Description</strong></br>
                                             <span class="pull-right"> <p class="contact-type"><i class="fa fa-info"> </i></p></span>
-                                            {{ task.task_description }}
+                                            {{ expense.expense_description }}
                                         </li>
 
                                         <li class="list-group-item">
-                                            <strong>Exp start-end date</strong></br>
+                                            <strong>Expxpense date</strong></br>
                                             <span class="pull-right"> <p class="contact-type"><i class="fa fa-clock-o"> </i></p></span>
-                                            {{ task.task_exp_start_date }} - {{ task.task_exp_end_date }}
+                                            {{ expense.expense_date }}
                                         </li>
 
-                                        <li class="list-group-item">
-                                            <strong>Actual start-end date</strong></br>
-                                            <span class="pull-right"> <p class="contact-type"><i class="fa fa-clock-o"> </i></p></span>
-                                            {{ task.task_actual_start_date }} - {{ task.task_actual_end_date }}
-                                        </li>
 
                                         <li class="list-group-item">
                                             <strong>Comments</strong></br>
                                             <span class="pull-right"> <p class="contact-type"><i class="fa fa-comments"> </i></p></span>
-                                            {{ task.comments }}
+                                            {{ expense.comments }}
                                         </li>
 
-                                        {% if task.asignee %}
-                                            <li class="list-group-item">
-                                                <strong>Asignee email</strong></br>
-                                                <span class="pull-right"> <p class="contact-type"><i class="fa fa-envelope"> </i></p></span>
-                                                {{ task.asignee.email }}
-                                            </li>
+                                        <li class="list-group-item">
+                                            <strong>Expenses amount</strong></br>
+                                            <span class="pull-right"> <p class="contact-type"><i class="fa 	fa fa-money"> </i></p></span>
+                                            {{ expense.expense_amount }}
+                                        </li>
 
-                                            <li class="list-group-item">
-                                                <strong>Asignee phone</strong></br>
-                                                <span class="pull-right"> <p class="contact-type"><i class="fa fa fa-phone"> </i></p></span>
-                                                {{ task.asignee.phone }}
-                                            </li>
-                                        {% endif %}
+                                        <li class="list-group-item">
+                                            <strong>Date created</strong></br>
+                                            <span class="pull-right"> <p class="contact-type"><i class="fa fa-clock-o"> </i></p></span>
+                                            {{ expense.created }}
+                                        </li>
+
+                                        <!--{% if task.asignee %}-->
+                                            <!--<li class="list-group-item">-->
+                                                <!--<strong>Asignee email</strong></br>-->
+                                                <!--<span class="pull-right"> <p class="contact-type"><i class="fa fa-envelope"> </i></p></span>-->
+                                                <!--{{ task.asignee.email }}-->
+                                            <!--</li>-->
+
+                                            <!--<li class="list-group-item">-->
+                                                <!--<strong>Asignee phone</strong></br>-->
+                                                <!--<span class="pull-right"> <p class="contact-type"><i class="fa fa fa-phone"> </i></p></span>-->
+                                                <!--{{ task.asignee.phone }}-->
+                                            <!--</li>-->
+                                        <!--{% endif %}-->
                                     </ul>
                                     <div style="margin-left:-10px;" class="col-lg-8">
-                                            <a data-toggle="tab" href="#tab-2"><button onclick="FillForm('{{ task.id }}', '{{ task.asignee.id }}', '{{ task.task_category }}', '{{ task.task_description }}', '{{ task.task_exp_start_date }}', '{{ task.task_exp_end_date }}', '{{ task.task_actual_start_date }}', '{{ task.task_actual_end_date }}', '{{ task.status }}', '{{ task.comments }}', '{{ task.asignee }}'); $('#tab_2').attr('class', 'active');$('#tab_1').attr('class', '');" type="button" class="btn btn-primary btn-sm btn-block">
+                                            <a data-toggle="tab" href="#tab-2"><button onclick="FillForm('{{ expense.id }}', '{{ expense.expense_category }}', '{{ expense.expense_description }}', '{{ expense.expense_date }}', '{{ expense.expense_amount }}', '{{ expense.created }}', '{{ expense.status }}', '{{ expense.comments }}'); $('#tab_2').attr('class', 'active');$('#tab_1').attr('class', '');" type="button" class="btn btn-primary btn-sm btn-block">
                                                 <i class="fa fa-edit"></i>   Edit info
                                             </button></a>
                                     </div>
@@ -277,23 +289,21 @@
 
 
 {% block js %}
-<script> function FillForm(task_id, asignee_id, task_category, task_description, task_exp_start_date, task_exp_end_date, task_actual_start_date, task_actual_end_date, status, comments, asignee) {
-    document.getElementById("task_id").value=task_id;
-    document.getElementById("task_category").value=task_category;
-    document.getElementById("task_description").value=task_description;
-    if(task_exp_start_date!='None'){document.getElementById("task_exp_start_date").value=task_exp_start_date;}
-    if(task_exp_end_date!='None'){document.getElementById("task_exp_end_date").value=task_exp_end_date;}
-    if(task_actual_start_date!='None'){document.getElementById("task_actual_start_date").value=task_actual_start_date;}
-    if(task_actual_end_date!='None'){document.getElementById("task_actual_end_date").value=task_actual_end_date;}
+
+<script> function FillForm(expense_id, expense_category, expense_description, expense_date, expense_amount, created, status, comments) {
+    document.getElementById("expense_id").value=expense_id;
+    document.getElementById("expense_category").value=expense_category;
+    document.getElementById("expense_description").value=expense_description;
+    document.getElementById("expense_date").value=expense_date;
+    document.getElementById("expense_amount").value=expense_amount;
     document.getElementById("selected").value=status;
     document.getElementById("comments").value=comments;
-    document.getElementById("asignee").value=asignee;
     }
 </script>
 
 <script>
         function codeAddress() {
-            $('#tasks_active').attr('class', 'active');
+            $('#expenses_active').attr('class', 'active');
         }
         window.onload = codeAddress;
 </script>

@@ -102,6 +102,8 @@ class ExpensesRegistration(forms.Form):
     expense_date = forms.CharField(required=False)
     expense_amount = forms.CharField(required=False)
     status = forms.CharField(required=False)
+    comments = forms.CharField(required=False)
+    schools = forms.CharField(required=False)
 
 
 
