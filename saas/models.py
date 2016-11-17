@@ -116,7 +116,7 @@ class Judge(models.Model):
     last_name = models.CharField(max_length=50, null=True, blank=True)
     phone = models.CharField(max_length=50, null=True, blank=True)
     organisation = models.CharField(max_length=50, null=True, blank=True)
-    # school = models.ManyToManyField(School)
+    # school = models.ForeignKey(School)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -156,24 +156,30 @@ class Child(models.Model):
         return unicode(self.id)
 
 class Entry(models.Model):
-    child = models.ManyToManyField(Child)
+    child = models.ForeignKey(Child, default=None, null=True, blank=True)
     grase_division = models.CharField(max_length=50, null=True, blank=True)
     art_category = models.CharField(max_length=50, null=True, blank=True)
     special_art_division = models.CharField(max_length=50, null=True, blank=True)
     title_art_work = models.CharField(max_length=50, null=True, blank=True)
     art_work_details = models.TextField(max_length=5000, null=True, blank=True)
     artist_statements = models.CharField(max_length=50, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated = models.DateTimeField(auto_now=True, null=True, blank=True)
+    due_date = models.CharField(max_length=50, null=True, blank=True)
+    submited = models.BooleanField(default=False)
 
     def __unicode__(self):
         return unicode(self.title_art_work)
 
 
 class Result(models.Model):
-    entry = models.ManyToManyField(Entry)
+    entry = models.ForeignKey(Entry, default=None, null=True, blank=True)
     score_basis_1 = models.PositiveIntegerField(max_length=20, null=True, blank=True)
     score_basis_2 = models.PositiveIntegerField(max_length=20, null=True, blank=True)
     score_basis_3 = models.PositiveIntegerField(max_length=20, null=True, blank=True)
     score_basis_4 = models.PositiveIntegerField(max_length=20, null=True, blank=True)
     total_score = models.PositiveIntegerField(max_length=20, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated = models.DateTimeField(auto_now=True, null=True, blank=True)
 
 

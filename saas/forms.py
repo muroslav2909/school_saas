@@ -96,7 +96,6 @@ class ChildRegistration(forms.Form):
     schools = forms.CharField(required=False)
 
 class ExpensesRegistration(forms.Form):
-    # school = forms.CharField(required=False)
     expense_category = forms.CharField(required=False)
     expense_description = forms.CharField(required=False)
     expense_date = forms.CharField(required=False)
@@ -104,6 +103,25 @@ class ExpensesRegistration(forms.Form):
     status = forms.CharField(required=False)
     comments = forms.CharField(required=False)
     schools = forms.CharField(required=False)
+
+class EntryRegistration(forms.Form):
+    child_id = forms.CharField(required=False)
+    grase_division = forms.CharField(required=False)
+    art_category = forms.CharField(required=False)
+    special_art_division = forms.CharField(required=False)
+    title_art_work = forms.CharField(required=False)
+    art_work_details = forms.CharField(required=False)
+    artist_statements = forms.CharField(required=False)
+
+class ResultRegistration(forms.Form):
+    score_basis_1 = forms.CharField(required=False)
+    score_basis_2 = forms.CharField(required=False)
+    score_basis_3 = forms.CharField(required=False)
+    score_basis_4 = forms.CharField(required=False)
+
+
+
+
 
 
 

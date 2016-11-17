@@ -43,6 +43,10 @@ urlpatterns = [
     url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^children', views.children, name='children'),
     url(r'^expenses', views.expenses, name='expenses'),
+    url(r'^entries', views.entries, name='entries'),
+    url(r'^judje_entries', views.judje_entries, name='judje_entries'),
+    url(r'^result', views.result, name='result'),
+
 
 
 

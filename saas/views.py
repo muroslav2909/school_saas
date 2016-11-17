@@ -4,11 +4,13 @@ from django.contrib.auth import authenticate, login, logout
 from saas.forms import FirstStepRegistration, ParentRegistration, SchoolRegistration, \
     JudgesRegistration, ChairRegistration, VolunteerRegistration, PTABoardRegistration,\
     TaskRegistration, ParentInvite, JudgeInvite, ImgValidation, ForgotPass, ChildRegistration,\
-    ExpensesRegistration
+    ExpensesRegistration, EntryRegistration, ResultRegistration
 from django.template import Context, Template
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
-from saas.models import Parent, School, Judge, Admin, Volunteer, PTABoard, Task, Image_Logo, Child, Expenses
+from saas.models import Parent, School, Judge, Admin, Volunteer, PTABoard, Task, Image_Logo, Child,\
+    Expenses, Entry, Result
+
 from django.contrib.sessions.models import Session
 from datetime import datetime, date, time
 from django.utils.crypto import get_random_string
@@ -171,11 +173,17 @@ def main(request):
     print "request.userrequest.userrequest.userrequest.userrequest.userrequest.user", request.user
     try:
         if Parent.objects.get(user=request.user):
+            context = {
+                "parent": Parent.objects.get(user=request.user),
+            }
             return render(request, "auth/parent.html", context)
     except:
         pass
     try:
         if Judge.objects.get(user=request.user):
+            context = {
+                "judge": Judge.objects.get(user=request.user),
+            }
             return render(request, "auth/judges.html", context)
     except:
         pass
@@ -635,3 +643,159 @@ def expenses(request):
     except:
         pass
     return render(request, "expenses.html", context)
+
+
+
+
+def entries(request):
+    context = {}
+    entries = None
+    last_modification = ''
+    counter = 0
+    entries_id = None
+    try:
+        parent = Parent.objects.get(user=request.user)
+        school = School.objects.get(id=parent.school.all()[0].id)
+        children = Child.objects.filter(parent=parent)
+        children_ids = map(lambda z: z.id, children)
+        print "children_idchildren_idschildren_idschildren_idss", children_ids
+        try:
+            entries = Entry.objects.filter(child__id__in=children_ids).order_by('-created')
+            last_modification = entries.order_by('updated')[0].updated
+            counter = entries.count()
+        except:
+            pass
+        context = {
+            'parent': parent,
+            'entries': entries,
+            'school': school,
+            'children': children,
+            'last_modification': last_modification,
+            'counter': counter,
+        }
+        try:  # if edit
+            entries_id = request.POST['entries_id']
+        except:
+            pass
+
+
+        if request.method == 'POST' and request.POST['entries']:
+            form = EntryRegistration(request.POST)
+            if form.is_valid():
+
+                child_id = form.cleaned_data['child_id']
+                grase_division = form.cleaned_data['grase_division']
+                art_category = form.cleaned_data['art_category']
+                special_art_division = form.cleaned_data['special_art_division']
+                title_art_work = form.cleaned_data['title_art_work']
+                art_work_details = form.cleaned_data['art_work_details']
+                artist_statements = form.cleaned_data['artist_statements']
+                try:
+                    c = Child.objects.get(id=int(child_id))
+                except:
+                    print "ergexceptexceptexceptgrg111111111111"
+                if not entries_id:
+                    entry = Entry(grase_division=grase_division,
+                                  art_category=art_category,
+                                  child=c,
+                                  special_art_division=special_art_division,
+                                  art_work_details=art_work_details,
+                                  artist_statements=artist_statements,
+                                  title_art_work=title_art_work)
+                    entry.save()
+                    # entry.parent.add(parent)
+                    context['entries'] = Entry.objects.filter(child__id__in=children_ids).order_by('-created')
+                else:
+                    entry = Entry.objects.filter(id=int(entries_id))
+                    # c.school = s
+                    # c.save()
+                    entry.update(grase_division=grase_division,
+                                  art_category=art_category,
+                                  child=c,
+                                  special_art_division=special_art_division,
+                                  art_work_details=art_work_details,
+                                  artist_statements=artist_statements,
+                                  title_art_work=title_art_work)
+                return redirect('/entries')
+
+
+
+    except:
+        pass
+
+    if request.method == 'POST' and request.POST['submit']:
+        print "request.POST['submit']", request.POST['submit']
+        entry = Entry.objects.get(id=int(request.POST['submit']))
+        entry.submited = True
+        entry.save()
+        return redirect('/entries')
+
+    return render(request, "entries.html", context)
+
+
+
+def result(request):
+    context = {}
+    last_modification = ''
+    counter = 0
+    try:
+        judge = Judge.objects.get(user=request.user)
+        results = Result.objects.filter()
+        try:
+            last_modification = results.order_by('updated')[0].updated
+            counter = results.count()
+        except:
+            pass
+        context = {
+            'judge': judge,
+            'results': results,
+            'last_modification': last_modification,
+            'counter': counter,
+        }
+    except:
+        print "exxxx"
+    return render(request, "result.html", context)
+
+
+
+def judje_entries(request):
+    context = {}
+    last_modification = ''
+    counter = 0
+    try:
+        judge = Judge.objects.get(user=request.user)
+        entries = Entry.objects.filter()
+        try:
+            last_modification = entries.order_by('updated')[0].updated
+            counter = entries.count()
+        except:
+            pass
+        context = {
+            'judge': judge,
+            'entries': entries,
+            'last_modification': last_modification,
+            'counter': counter,
+        }
+
+        if request.method == 'POST' and request.POST['entries']:
+            form = ResultRegistration(request.POST)
+            if form.is_valid():
+                score_basis_1 = form.cleaned_data['score_basis_1']
+                score_basis_2 = form.cleaned_data['score_basis_2']
+                score_basis_3 = form.cleaned_data['score_basis_3']
+                score_basis_4 = form.cleaned_data['score_basis_4']
+
+                entry = Entry.objects.get(id=int(request.POST['entries']))
+                total_score = int(score_basis_1) + int(score_basis_2) + int(score_basis_3) + int(score_basis_4)
+                result = Result(entry=entry,
+                                score_basis_1=score_basis_1,
+                                score_basis_2=score_basis_2,
+                                score_basis_3=score_basis_3,
+                                score_basis_4=score_basis_4,
+                                total_score=total_score)
+                result.save()
+                return redirect('/judje_entries')
+    except:
+        pass
+
+    return render(request, "judje_entries.html", context)
