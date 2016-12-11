@@ -355,10 +355,11 @@ def school(request):
         except:
             pass
         try:
+            from django.utils import timezone
             if 'img' in request.POST:
                 form = ImgValidation(request.POST)
                 if form.is_valid():
-                    path = "media/logo_%d_%s.jpg" % (school.id, datetime.now().strftime("%d_%m_%y_%H_%M"))
+                    path = "media/logo_%d_%s.jpg" % (school.id, timezone.now().strftime("%d_%m_%y_%H_%M"))
                     image = Image_Logo(path=path, school=school).save()
                     context['images'] = Image_Logo.objects.filter(school=school).order_by('-created')[:3]
                     from PIL import Image
@@ -799,3 +800,20 @@ def judje_entries(request):
         pass
 
     return render(request, "judje_entries.html", context)
+
+from django.http import JsonResponse
+@login_required
+def volonteer_invite(request):
+    ids = request.POST.get('ids').split(',')
+    print request.POST.get('ids'), ids
+    for id in ids:
+        print "id= ", id
+        try:
+            v = Volunteer.objects.get(id=int(id))
+            email = v.email
+            context = Context({})
+            path = BASE_DIR + '/templates/email/invite_vol.html'
+            send_letter(open(path, 'r').read(), "Invitation from School Chair.", 'invite_vol', email, context)
+        except Exception, e:
+            print e
+    return JsonResponse({'success': ids})

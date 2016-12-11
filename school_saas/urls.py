@@ -46,7 +46,7 @@ urlpatterns = [
     url(r'^entries', views.entries, name='entries'),
     url(r'^judje_entries', views.judje_entries, name='judje_entries'),
     url(r'^result', views.result, name='result'),
-
+    url(r'^volonteer_invite', views.volonteer_invite, name='volonteer_invite'),
 
 
 
